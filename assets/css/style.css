@@ -1,0 +1,25 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+.container {
+  padding-top: 50px;
+  min-height: 100%;
+  margin-bottom: -50px;
+}
+.footer {
+  height: 50px;
+  border-top: 1px solid #E1E1E1;
+  padding-top: 10px;
+}
+.footer_push {
+  height: 100px;
+}
+.text-center {
+  text-align: center;
+}
+.question_row {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #E1E1E1;
+}
