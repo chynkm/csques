@@ -101,3 +101,19 @@ function get_status_message($status,$msg)
         return $CI->load->view('common/status_message', $data, TRUE);
     }
 }
+
+/**
+ * Debug and die
+ *
+ * @author Karthik M <chynkm@gmail.com>
+ *
+ * @param  string|array $variable
+ *
+ * @return void
+ */
+function dd($variable)
+{
+    echo '<pre>';
+    print_r($variable);
+    die;
+}
