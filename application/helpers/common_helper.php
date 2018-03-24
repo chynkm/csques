@@ -46,7 +46,7 @@ function populate_value($field_name, $field_array, $default = "")
  */
 function get_site_name()
 {
-    return 'CS CBSE';
+    return 'MCQP';
 }
 
 
@@ -111,7 +111,7 @@ function get_status_message($status,$msg)
  *
  * @return void
  */
-function dd($variable)
+function dd($variable = '')
 {
     echo '<pre>';
     print_r($variable);

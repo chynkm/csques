@@ -12,16 +12,16 @@ class Subject extends CI_Controller {
 
     public function index()
     {
-        $data['subjects'] = $this->subject_model->getSubjects();
+        $data['subjects'] = $this->subject_model->getSubjectSlugList();
 
         $this->template
             ->title(get_site_name(), 'Subject listing')
             ->build('subject/index', $data);
     }
 
-    public function show($subject_id)
+    public function show($subject_slug)
     {
-        $data['exams'] = $this->subject_model->getExamList($subject_id);
+        $data['exams'] = $this->subject_model->getExamList($subject_slug);
 
         $this->template
             ->title(get_site_name(), 'Exam listing')

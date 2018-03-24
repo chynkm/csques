@@ -26,3 +26,16 @@ html, body {
 .th_exam {
   width: 75%;
 }
+.option_label_body {
+  margin-left: .5rem;
+  font-weight: 400;
+}
+.show_space {
+  white-space: pre;
+}
+.question_codes {
+  margin-left: 40px;
+}
+.question_row ul {
+  list-style-type: none;
+}

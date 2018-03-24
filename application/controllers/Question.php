@@ -22,6 +22,7 @@ class Question extends CI_Controller {
     public function exam($exam_id)
     {
         $this->session->set_userdata('exam_id', $exam_id);
+        $this->session->unset_userdata('question_id');
         redirect('question/show');
     }
 

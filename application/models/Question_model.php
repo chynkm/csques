@@ -16,7 +16,7 @@ class Question_model extends CI_Model
             $whereCondition = ['exam_id' => $exam_id];
         }
 
-        $result = $this->db->select('id, question, option1, option2, option3, option4, answer')
+        $result = $this->db->select('id, question, codes, option1, option2, option3, option4, answer')
             ->limit(1)
             ->order_by('created_at ASC')
             ->get_where('questions', $whereCondition);
@@ -36,4 +36,15 @@ class Question_model extends CI_Model
         return $this->db->count_all_results();
     }
 
+    public function replaceShape() {
+        $this->db->select('id, question');
+        $this->db->like('question', '<shape');
+        $query = $this->db->from('questions')->get();
+
+        foreach ($query->result() as $key => $row) {
+            $replaced_question = preg_replace('/<shape(.*?)<\/shape>/s', '', $row->question);
+            $this->db->update('questions', ['question' => $replaced_question], ['id' => $row->id]);
+        }
+
+    }
 }
