@@ -4,7 +4,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Subject_model extends CI_Model
 {
 
-    public function getSubjectSlugList()
+    /**
+     * Get subject listing with slug as key
+     *
+     * @author Karthik M <chynkm@gmail.com>
+     *
+     * @return array
+     */
+    public function get_subject_slug_list()
     {
         $query = $this->db->select('slug, subject')
             ->from('subjects')
@@ -20,7 +27,14 @@ class Subject_model extends CI_Model
         return $data;
     }
 
-    public function getExamList($subject_slug = null)
+    /**
+     * Get exam listing
+     *
+     * @author Karthik M <chynkm@gmail.com>
+     *
+     * @return array
+     */
+    public function get_exam_list($subject_slug = null)
     {
         $this->db->select('e.id, paper, subject, month, year')
             ->from('exams e')

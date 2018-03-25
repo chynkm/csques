@@ -10,6 +10,7 @@
         <tr>
             <td><?php echo $exam; ?></td>
             <td>
+                <a href="<?php echo base_url('question/index/'.$id); ?>" class="button">List</a>
                 <a href="<?php echo base_url('question/exam/'.$id); ?>" class="button">Try</a>
                 <button class="button-primary">Test</button>
             </td>

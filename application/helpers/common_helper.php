@@ -117,3 +117,43 @@ function dd($variable = '')
     print_r($variable);
     die;
 }
+
+/**
+ * Remove space method for array_filter command
+ *
+ * @author Karthik M <chynkm@gmail.com>
+ *
+ * @param  string $value
+ *
+ * @return boolean
+ */
+function remove_space($value)
+{
+    return $value != '';
+}
+
+/**
+ * Generate the view for answer_key table for MATCH THE FOLLOWING questions
+ *
+ * @author Karthik M <chynkm@gmail.com>
+ *
+ * @param  array $question
+ *
+ * @return string
+ */
+function get_answer_key_table($question)
+{
+    if(! is_null($question['codes']) && strlen($question['codes'])) {
+
+        $CI = &get_instance();
+        $data['codes'] = array_filter(explode(' ', $question['codes']), 'remove_space');
+        $data['answers'] = [
+            'A' => array_filter(explode(' ', $question['option1']), 'remove_space'),
+            'B' => array_filter(explode(' ', $question['option2']), 'remove_space'),
+            'C' => array_filter(explode(' ', $question['option3']), 'remove_space'),
+            'D' => array_filter(explode(' ', $question['option4']), 'remove_space')
+        ];
+
+        return $CI->load->view('question/answer_key_table', $data, TRUE);
+    }
+}

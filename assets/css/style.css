@@ -39,3 +39,7 @@ html, body {
 .question_row ul {
   list-style-type: none;
 }
+table.table_bordered th, table.table_bordered td {
+  border: 1px solid #E1E1E1;
+  padding: 10px;
+}
