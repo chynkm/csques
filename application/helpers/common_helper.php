@@ -11,7 +11,7 @@
  */
 function asset_url($value = '')
 {
-   return base_url('assets/'.$value);
+   return site_url('assets/'.$value);
 }
 
 /**
@@ -36,7 +36,6 @@ function populate_value($field_name, $field_array, $default = "")
         return set_value ($field_name,$default);
 }
 
-
 /**
  * Returns the site name
  *
@@ -48,7 +47,6 @@ function get_site_name()
 {
     return 'MCQP';
 }
-
 
 /**
  * Checks whether a user is logged in or not
@@ -62,7 +60,6 @@ function check_login()
     $CI = get_instance();
     return ($CI->session->userdata('user_validated') && $CI->session->userdata('user_id')) ? TRUE : FALSE;
 }
-
 
 /**
  * Sets flash message for status
@@ -79,7 +76,6 @@ function set_flash_message($status, $message)
     $CI->session->set_flashdata('status', $status);
     $CI->session->set_flashdata('msg', $message);
 }
-
 
 /**
  * FOR SHOWING SUCCESS/ERROR MESSAGES
@@ -156,4 +152,30 @@ function get_answer_key_table($question)
 
         return $CI->load->view('question/answer_key_table', $data, TRUE);
     }
+}
+
+/**
+ * Get the client IP address
+ *
+ * @author Karthik M <chynkm@gmail.com>
+ *
+ * @return string
+ */
+function get_client_ip() {
+    $ipaddress = '';
+    if (isset($_SERVER['HTTP_CLIENT_IP']))
+        $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+    else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+        $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    else if(isset($_SERVER['HTTP_X_FORWARDED']))
+        $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+    else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
+        $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+    else if(isset($_SERVER['HTTP_FORWARDED']))
+        $ipaddress = $_SERVER['HTTP_FORWARDED'];
+    else if(isset($_SERVER['REMOTE_ADDR']))
+        $ipaddress = $_SERVER['REMOTE_ADDR'];
+    else
+        $ipaddress = 'UNKNOWN';
+    return $ipaddress;
 }

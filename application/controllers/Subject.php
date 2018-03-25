@@ -36,16 +36,23 @@ class Subject extends CI_Controller {
     /**
      * Show available exams for a Subject
      *
+     * @todo - need to set flash data and echo the error when redirect fails
+     *
      * @author Karthik M <chynkm@gmail.com>
+     *
+     * @param  string $subject_slug
      *
      * @return view
      */
     public function show($subject_slug)
     {
-        $data['exams'] = $this->subject_model->get_exam_list($subject_slug);
+        $data['papers'] = $this->subject_model->get_exam_list($subject_slug);
+        if($data['papers'] === false) {
+            redirect('/');
+        }
 
         $this->template
-            ->title(get_site_name(), 'Exam listing')
+            ->title(get_site_name(), 'Paper listing')
             ->build('subject/show', $data);
     }
 

@@ -25,6 +25,5 @@
                 </div>
             </div>
         </div>
-        <script src="<?php echo asset_url('js/zepto.min.js'); ?>"></script>
     </body>
 </html>

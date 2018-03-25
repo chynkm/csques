@@ -22,11 +22,19 @@ class Question extends CI_Controller {
      *
      * @author Karthik M <chynkm@gmail.com>
      *
+     * @todo - need to set flash data and echo the error when redirect fails
+     *
+     * @param  string $paper_slug
+     *
      * @return view
      */
-    public function show()
+    public function show($paper_slug = '')
     {
         $data['question'] = $this->question_model->get_next_question();
+
+        if($data['question'] === false) {
+            redirect('/');
+        }
 
         $this->template
             ->title(get_site_name(), 'Question')
@@ -38,13 +46,39 @@ class Question extends CI_Controller {
      *
      * @author Karthik M <chynkm@gmail.com>
      *
+     * @param  string $paper_slug
+     *
      * @return view
      */
-    public function exam($exam_id)
+    public function paper($paper_slug)
     {
-        $this->session->set_userdata('exam_id', $exam_id);
-        $this->session->unset_userdata('question_id');
-        redirect('question/show');
+        $paper_id = $this->_validate_paper_slug($paper_slug);
+
+        $this->question_model->create_trial_paper($paper_id);
+
+        redirect('question/show/');
+    }
+
+    /**
+     * return Valid slug ? paper_id : redirect to '/'
+     *
+     * @todo - need to set flash data and echo the error when redirect fails
+     *       - check whether the redirect can be made to the last active page
+     *
+     * @author Karthik M <chynkm@gmail.com>
+     *
+     * @param  string $paper_slug
+     *
+     * @return int|redirect
+     */
+    private function _validate_paper_slug($paper_slug)
+    {
+        $paper_id = $this->question_model->get_paper_id($paper_slug);
+        if($paper_id === false) {
+            redirect('/');
+        }
+
+        return $paper_id;
     }
 
     /**
@@ -52,11 +86,15 @@ class Question extends CI_Controller {
      *
      * @author Karthik M <chynkm@gmail.com>
      *
+     * @param  string $paper_slug
+     *
      * @return view
      */
-    public function index($exam_id)
+    public function index($paper_slug)
     {
-        $data['questions'] = $this->question_model->get_all_questions($exam_id);
+        $paper_id = $this->_validate_paper_slug($paper_slug);
+
+        $data['questions'] = $this->question_model->get_all_questions($paper_id);
 
         $this->template
             ->title(get_site_name(), 'Question Listing')

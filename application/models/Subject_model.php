@@ -32,27 +32,28 @@ class Subject_model extends CI_Model
      *
      * @author Karthik M <chynkm@gmail.com>
      *
-     * @return array
+     * @param  string $subject_slug
+     *
+     * @return array|bool
      */
-    public function get_exam_list($subject_slug = null)
+    public function get_exam_list($subject_slug)
     {
-        $this->db->select('e.id, paper, subject, month, year')
-            ->from('exams e')
+        $this->db->select('p.slug, paper, subject, month, year')
+            ->where('s.slug', $subject_slug)
+            ->from('papers p')
             ->join('subjects s', 's.id = subject_id');
-
-        if($subject_slug) {
-            $this->db->where('s.slug', $subject_slug);
-        }
 
         $query = $this->db->order_by('subject ASC, year DESC, month ASC')->get();
 
-        $data = [];
-
-        foreach ($query->result() as $row) {
-            $data[$row->id] = $row->subject.' Paper '.$row->paper.' '.ucfirst($row->month).' '.$row->year;
+        if($query->num_rows()) {
+            $data = [];
+            foreach ($query->result() as $row) {
+                $data[$row->slug] = $row->subject.' Paper '.$row->paper.' '.ucfirst($row->month).' '.$row->year;
+            }
+            return $data;
         }
 
-        return $data;
+        return false;
     }
 
 }

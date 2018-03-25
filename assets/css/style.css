@@ -43,3 +43,18 @@ table.table_bordered th, table.table_bordered td {
   border: 1px solid #E1E1E1;
   padding: 10px;
 }
+.wrong {
+  color: #FC0815;
+  font-size: 15px;
+}
+.correct {
+  color: #22823A;
+  font-size: 15px;
+}
+.question_options {
+  margin-bottom: 10px;
+  padding: 10px;
+}
+.option_label {
+  display: inline;
+}
