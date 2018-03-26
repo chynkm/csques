@@ -18,6 +18,11 @@ class Question_model extends CI_Model
                 $this->db->update('question_trial_paper',
                     ['user_answer' => $this->input->post('answer')],
                     ['id' => $this->session->userdata('question_trial_paper_id')]);
+
+                $this->db->query("UPDATE question_trial_paper qtp
+                    JOIN questions q on qtp.question_id = q.id
+                    SET result = IF(user_answer = answer, 'correct', 'incorrect')
+                    WHERE qtp.id = ".$this->session->userdata('question_trial_paper_id'));
             }
 
             switch ($this->input->post('submit')) {
@@ -28,38 +33,65 @@ class Question_model extends CI_Model
                     $this->session->set_userdata('question_trial_paper_id', $this->session->userdata('question_trial_paper_id') + 1);
                     break;
                 default:
-                    # code...
+                    redirect('question/score');
                     break;
             }
             redirect('question/show');
         }
 
-        $question_trial_paper_id = $this->session->userdata('question_trial_paper_id');
-        $whereCondition = ['qtp.id' => $question_trial_paper_id];
-
         $query = $this->db->select('q.id, question, codes, option1, option2, option3, option4, answer, user_answer, fake_id')
             ->join('question_trial_paper qtp', 'qtp.question_id = q.id')
-            ->get_where('questions q', $whereCondition);
+            ->get_where('questions q', ['qtp.id' => $this->session->userdata('question_trial_paper_id')]);
 
         if($query->num_rows()) {
-            $question = $query->row_array();
-            return $question;
+            return $query->row_array();
         }
 
         return false;
     }
 
     /**
-     * Get count of questions in an exam
+     * Save user answer to DB
+     *
+     * @author Karthik M <chynkm@gmail.com>
+     *
+     * @return boolean
+     */
+    public function save_answer()
+    {
+        $result = $this->db->update('question_trial_paper',
+            ['user_answer' => $this->input->post('answer')],
+            ['id' => $this->session->userdata('question_trial_paper_id')]);
+
+        $this->db->query("UPDATE question_trial_paper qtp
+            JOIN questions q on qtp.question_id = q.id
+            SET result = IF(user_answer = answer, 'correct', 'incorrect')
+            WHERE qtp.id = ".$this->session->userdata('question_trial_paper_id'));
+
+        return $result;
+    }
+
+    /**
+     * Get score of the exam
      *
      * @author Karthik M <chynkm@gmail.com>
      *
      * @return string
      */
-    public function get_question_count($paper_id)
+    public function get_score()
     {
-        $this->db->get_where('questions', array('paper_id' => $paper_id));
-        return $this->db->count_all_results();
+        $query = $this->db->select("
+            COUNT(CASE WHEN result = 'correct' THEN 1 END) correct_answer_count,
+            COUNT(CASE WHEN result = 'incorrect' THEN 1 END) incorrect_answer_count,
+            max(fake_id) as total_questions")
+            ->get_where('question_trial_paper', ['trial_paper_id' => $this->session->userdata('trial_paper_id')]);
+
+
+        if($query->num_rows()) {
+            return $query->row_array();
+        }
+
+        return false;
     }
 
     /**
@@ -127,13 +159,31 @@ class Question_model extends CI_Model
         $this->session->unset_userdata([
             'question_trial_paper_id',
             'question_trial_paper_min_id',
-            'question_trial_paper_max_id'
+            'question_trial_paper_max_id',
+            'trial_paper_id',
         ]);
 
         $this->session->set_userdata([
             'question_trial_paper_id' => $query->row()->min_id,
             'question_trial_paper_min_id' => $query->row()->min_id,
             'question_trial_paper_max_id' => $query->row()->max_id,
+            'trial_paper_id' => $trial_paper_id,
         ]);
+    }
+
+    /**
+     * Get the current attended paper's slug
+     *
+     * @author Karthik M <chynkm@gmail.com>
+     *
+     * @return string
+     */
+    public function get_attended_paper_slug()
+    {
+        $query = $this->db->select('slug')
+            ->join('trial_papers tp', 'paper_id = p.id')
+            ->get_where('papers p', ['tp.id' => $this->session->userdata('trial_paper_id')]);
+
+        return $query->row()->slug;
     }
 }

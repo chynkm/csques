@@ -1,8 +1,8 @@
-<link rel="stylesheet" href="<?php echo asset_url('css/foundation-icons/foundation-icons.css'); ?>">
+<h1 class="bottom_border">Question <?php echo $question['fake_id']; ?></h1>
 <form method="post">
     <div class="row question_row">
         <div class="twelve columns">
-            <?php echo $question['fake_id'].'. '.$question['question']; ?>
+            <?php echo $question['question']; ?>
             <?php echo get_answer_key_table($question); ?>
         </div>
     </div>

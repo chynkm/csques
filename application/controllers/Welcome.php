@@ -23,7 +23,7 @@ class Welcome extends CI_Controller {
 		// $this->load->view('welcome_message');
 		$data = [];
 		$this->template
-            ->title(get_site_name(), 'Welcome to CI')
+            ->title('Welcome to CI', get_site_name())
             ->build('question/show', $data);
 	}
 }

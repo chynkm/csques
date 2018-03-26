@@ -33,6 +33,5 @@ APP.question_show = {
     clickAnswer: function(val) {
         $('.option_radio[value='+val+']').prop('checked', true);
         this.displayAnswer($(this));
-        console.log('aaa');
     },
 };

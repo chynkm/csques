@@ -9,6 +9,7 @@
         <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="<?php echo asset_url('css/normalize.min.css'); ?>">
         <link rel="stylesheet" href="<?php echo asset_url('css/skeleton.min.css'); ?>">
+        <link rel="stylesheet" href="<?php echo asset_url('css/foundation-icons/foundation-icons.css'); ?>">
         <link rel="stylesheet" href="<?php echo asset_url('css/style.css'); ?>">
         <link rel="icon" type="image/png" href="images/favicon.png">
     </head>

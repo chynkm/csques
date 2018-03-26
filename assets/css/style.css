@@ -51,10 +51,19 @@ table.table_bordered th, table.table_bordered td {
   color: #22823A;
   font-size: 15px;
 }
+.wrong_text_color {
+  color: #FC0815;
+}
+.correct_text_color {
+  color: #22823A;
+}
 .question_options {
   margin-bottom: 10px;
   padding: 10px;
 }
 .option_label {
   display: inline;
+}
+.bottom_border {
+  border-bottom: 1px solid #E1E1E1;
 }

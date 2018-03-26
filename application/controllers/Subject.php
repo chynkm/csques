@@ -29,7 +29,7 @@ class Subject extends CI_Controller {
         $data['subjects'] = $this->subject_model->get_subject_slug_list();
 
         $this->template
-            ->title(get_site_name(), 'Subject listing')
+            ->title('Subject listing', get_site_name())
             ->build('subject/index', $data);
     }
 
@@ -51,8 +51,10 @@ class Subject extends CI_Controller {
             redirect('/');
         }
 
+        $data['subject'] = $this->subject_model->get_subject($subject_slug);
+
         $this->template
-            ->title(get_site_name(), 'Paper listing')
+            ->title('Paper listing', get_site_name())
             ->build('subject/show', $data);
     }
 

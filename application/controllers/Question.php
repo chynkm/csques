@@ -37,7 +37,7 @@ class Question extends CI_Controller {
         }
 
         $this->template
-            ->title(get_site_name(), 'Question')
+            ->title('Question', get_site_name())
             ->build('question/show', $data);
     }
 
@@ -97,8 +97,37 @@ class Question extends CI_Controller {
         $data['questions'] = $this->question_model->get_all_questions($paper_id);
 
         $this->template
-            ->title(get_site_name(), 'Question Listing')
+            ->title('Question Listing', get_site_name())
             ->build('question/index', $data);
+    }
+
+    /**
+     * Display score
+     *
+     * @author Karthik M <chynkm@gmail.com>
+     *
+     * @return view
+     */
+    public function score()
+    {
+        $data['score'] = $this->question_model->get_score();
+        $data['attended_paper_slug'] = $this->question_model->get_attended_paper_slug();
+
+        $this->template
+            ->title('Score', get_site_name())
+            ->build('question/score', $data);
+    }
+
+    /**
+     * Save the submitted answer
+     *
+     * @author Karthik M <chynkm@gmail.com>
+     *
+     * @return boolean
+     */
+    public function ajax_save_answer()
+    {
+        echo $this->input->post('answer') ? $this->question_model->save_answer() : false;
     }
 
 }

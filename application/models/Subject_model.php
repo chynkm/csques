@@ -56,4 +56,19 @@ class Subject_model extends CI_Model
         return false;
     }
 
+    /**
+     * Get subject from slug
+     *
+     * @author Karthik M <chynkm@gmail.com>
+     *
+     * @param  string $subject_slug
+     *
+     * @return string|null
+     */
+    public function get_subject($subject_slug)
+    {
+        $query = $this->db->select('subject')->get_where('subjects', ['slug' => $subject_slug]);
+        return $query->num_rows() ? $query->row()->subject : null;
+    }
+
 }
