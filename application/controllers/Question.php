@@ -47,14 +47,15 @@ class Question extends CI_Controller {
      * @author Karthik M <chynkm@gmail.com>
      *
      * @param  string $paper_slug
+     * @param  boolean $test_exam
      *
      * @return view
      */
-    public function paper($paper_slug)
+    public function paper($paper_slug, $test_exam = false)
     {
         $paper_id = $this->_validate_paper_slug($paper_slug);
 
-        $this->question_model->create_trial_paper($paper_id);
+        $this->question_model->create_trial_paper($paper_id, $test_exam);
 
         redirect('question/show/');
     }
@@ -111,7 +112,7 @@ class Question extends CI_Controller {
     public function score()
     {
         $data['score'] = $this->question_model->get_score();
-        $data['attended_paper_slug'] = $this->question_model->get_attended_paper_slug();
+        $data['attended_paper_slug_and_subject_slug'] = $this->question_model->get_attended_paper_slug_and_subject_slug();
 
         $this->template
             ->title('Score', get_site_name())

@@ -14,17 +14,6 @@ class Question_model extends CI_Model
     public function get_next_question()
     {
         if($this->input->post()) {
-            if($this->input->post('answer')) {
-                $this->db->update('question_trial_paper',
-                    ['user_answer' => $this->input->post('answer')],
-                    ['id' => $this->session->userdata('question_trial_paper_id')]);
-
-                $this->db->query("UPDATE question_trial_paper qtp
-                    JOIN questions q on qtp.question_id = q.id
-                    SET result = IF(user_answer = answer, 'correct', 'incorrect')
-                    WHERE qtp.id = ".$this->session->userdata('question_trial_paper_id'));
-            }
-
             switch ($this->input->post('submit')) {
                 case 'previous':
                     $this->session->set_userdata('question_trial_paper_id', $this->session->userdata('question_trial_paper_id') - 1);
@@ -135,10 +124,11 @@ class Question_model extends CI_Model
      * @author Karthik M <chynkm@gmail.com>
      *
      * @param  int $paper_id
+     * @param  boolean $test_exam
      *
      * @return void
      */
-    public function create_trial_paper($paper_id)
+    public function create_trial_paper($paper_id, $test_exam = false)
     {
         $this->db->insert('trial_papers', [
             'paper_id' => $paper_id,
@@ -146,8 +136,16 @@ class Question_model extends CI_Model
         ]);
 
         $trial_paper_id = $this->db->insert_id();
-        $this->db->query("INSERT INTO question_trial_paper(question_id, trial_paper_id)
-            SELECT id, $trial_paper_id FROM questions WHERE paper_id = $paper_id");
+
+        if($test_exam) {
+            $insert_from_select_query = "INSERT INTO question_trial_paper(question_id, trial_paper_id)
+                SELECT id, $trial_paper_id FROM questions WHERE paper_id = $paper_id";
+        } else {
+            $insert_from_select_query = "INSERT INTO question_trial_paper(question_id, trial_paper_id)
+                SELECT id, $trial_paper_id FROM questions WHERE paper_id = $paper_id order by rand()";
+        }
+
+        $this->db->query($insert_from_select_query);
         $this->db->query('SET @pos := 0');
         $this->db->query("UPDATE question_trial_paper SET fake_id = (SELECT @pos := @pos + 1)
             WHERE trial_paper_id = $trial_paper_id ORDER BY updated_at DESC");
@@ -172,18 +170,19 @@ class Question_model extends CI_Model
     }
 
     /**
-     * Get the current attended paper's slug
+     * Get the current attended paper slug and subject slug
      *
      * @author Karthik M <chynkm@gmail.com>
      *
      * @return string
      */
-    public function get_attended_paper_slug()
+    public function get_attended_paper_slug_and_subject_slug()
     {
-        $query = $this->db->select('slug')
+        $query = $this->db->select('p.slug paper_slug, s.slug subject_slug')
             ->join('trial_papers tp', 'paper_id = p.id')
+            ->join('subjects s', 'subject_id = s.id')
             ->get_where('papers p', ['tp.id' => $this->session->userdata('trial_paper_id')]);
 
-        return $query->row()->slug;
+        return $query->row_array();
     }
 }

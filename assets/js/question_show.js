@@ -14,7 +14,15 @@ APP.question_show = {
     checkAnswer: function() {
         var self = this;
         this.option_radio.click(function() {
+            self.ajaxSaveAnswer($(this));
             self.displayAnswer($(this));
+        });
+    },
+
+    ajaxSaveAnswer: function(handle) {
+        $('.submission_buttons').addClass('disabled');
+        $.post(routes.saveAnswerRoute, { answer: handle.val() } ,function(response) {
+            $('.submission_buttons').removeClass('disabled');
         });
     },
 
@@ -26,7 +34,6 @@ APP.question_show = {
                 $(this).parent().find('.answer_icon').addClass('fi-x wrong');
             }
         });
-        $('#answer').val(handle.val());
         this.option_radio.prop('disabled', true);
     },
 

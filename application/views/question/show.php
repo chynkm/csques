@@ -40,19 +40,23 @@
         </div>
     </div>
 
-    <input type="hidden" id="answer" name="answer">
     <input type="hidden" id="correct_answer" value="<?php echo $question['answer']; ?>">
     <?php if($this->session->userdata('question_trial_paper_id') > $this->session->userdata('question_trial_paper_min_id')): ?>
-    <button class="button" type="submit" name="submit" value="previous"><i class="fi-arrow-left"></i>&nbsp;Previous</button>
+    <button class="button submission_buttons" type="submit" name="submit" value="previous"><i class="fi-arrow-left"></i>&nbsp;Previous</button>
     <?php endif; ?>
     <?php if($this->session->userdata('question_trial_paper_id') < $this->session->userdata('question_trial_paper_max_id')): ?>
-    <button class="button u-pull-right" type="submit" name="submit" value="next">Next&nbsp;<i class="fi-arrow-right"></i></button>
+    <button class="button u-pull-right submission_buttons" type="submit" name="submit" value="next">Next&nbsp;<i class="fi-arrow-right"></i></button>
     <?php endif; ?>
     <?php if($this->session->userdata('question_trial_paper_id') == $this->session->userdata('question_trial_paper_max_id')): ?>
-    <button class="button-primary u-pull-right" type="submit" name="submit" value="end_paper">Submit</button>
+    <button class="button-primary u-pull-right submission_buttons" type="submit" name="submit" value="end_paper">Submit</button>
     <?php endif; ?>
 </form>
 <script src="<?php echo asset_url('js/zepto.min.js'); ?>"></script>
+<script type="text/javascript">
+var routes = {
+    saveAnswerRoute: "<?php echo site_url('question/ajax_save_answer'); ?>",
+};
+</script>
 <script src="<?php echo asset_url('js/question_show.js'); ?>"></script>
 <?php if(! is_null($question['user_answer'])): ?>
 <script type="text/javascript">

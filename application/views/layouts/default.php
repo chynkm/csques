@@ -14,7 +14,15 @@
         <link rel="icon" type="image/png" href="images/favicon.png">
     </head>
     <body>
-        <div class="container">
+        <nav class="navbar">
+            <div class="container">
+                <ul class="navbar-list">
+                    <li class="navbar-item"><a class="navbar-link" href="#">Home</a></li>
+                    <li class="navbar-item"><a class="navbar-link" href="#">Examples</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container main_content">
             <?php echo get_status_message($this->session->flashdata('status'), $this->session->flashdata('msg')); ?>
             <?php echo $template['body']; ?>
             <div class="footer_push"></div>
