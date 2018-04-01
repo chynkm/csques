@@ -5,7 +5,7 @@ class Question_model extends CI_Model
 {
 
     /**
-     * Get question
+     * Get question and process POST submission
      *
      * @author Karthik M <chynkm@gmail.com>
      *
@@ -22,6 +22,7 @@ class Question_model extends CI_Model
                     $this->session->set_userdata('question_trial_paper_id', $this->session->userdata('question_trial_paper_id') + 1);
                     break;
                 default:
+                    $this->session->set_userdata('paper_completed', 1);
                     redirect('question/score');
                     break;
             }
@@ -50,7 +51,10 @@ class Question_model extends CI_Model
     {
         $result = $this->db->update('question_trial_paper',
             ['user_answer' => $this->input->post('answer')],
-            ['id' => $this->session->userdata('question_trial_paper_id')]);
+            [
+                'id' => $this->session->userdata('question_trial_paper_id'),
+                'user_answer IS NULL' => null
+            ]);
 
         $this->db->query("UPDATE question_trial_paper qtp
             JOIN questions q on qtp.question_id = q.id
@@ -130,25 +134,26 @@ class Question_model extends CI_Model
      */
     public function create_trial_paper($paper_id, $test_exam = false)
     {
+        $paper_end_time = $test_exam ? $this->get_end_time_for_paper($paper_id) : null;
         $this->db->insert('trial_papers', [
             'paper_id' => $paper_id,
             'ip_address' => get_client_ip(),
+            'end_time' => $paper_end_time,
         ]);
 
         $trial_paper_id = $this->db->insert_id();
 
         if($test_exam) {
             $insert_from_select_query = "INSERT INTO question_trial_paper(question_id, trial_paper_id)
-                SELECT id, $trial_paper_id FROM questions WHERE paper_id = $paper_id";
+                SELECT id, $trial_paper_id FROM questions WHERE paper_id = $paper_id order by rand()";
         } else {
             $insert_from_select_query = "INSERT INTO question_trial_paper(question_id, trial_paper_id)
-                SELECT id, $trial_paper_id FROM questions WHERE paper_id = $paper_id order by rand()";
+                SELECT id, $trial_paper_id FROM questions WHERE paper_id = $paper_id";
         }
 
         $this->db->query($insert_from_select_query);
-        $this->db->query('SET @pos := 0');
-        $this->db->query("UPDATE question_trial_paper SET fake_id = (SELECT @pos := @pos + 1)
-            WHERE trial_paper_id = $trial_paper_id ORDER BY updated_at DESC");
+        $this->db->query("UPDATE question_trial_paper JOIN (SELECT @fake_id := 0) temp
+            SET fake_id=@fake_id:=@fake_id+1 WHERE trial_paper_id = $trial_paper_id");
 
         $this->db->select_min('id', 'min_id')->select_max('id', 'max_id');
         $query = $this->db->get_where('question_trial_paper', "trial_paper_id = $trial_paper_id");
@@ -159,6 +164,8 @@ class Question_model extends CI_Model
             'question_trial_paper_min_id',
             'question_trial_paper_max_id',
             'trial_paper_id',
+            'paper_completed',
+            'paper_end_time',
         ]);
 
         $this->session->set_userdata([
@@ -166,7 +173,25 @@ class Question_model extends CI_Model
             'question_trial_paper_min_id' => $query->row()->min_id,
             'question_trial_paper_max_id' => $query->row()->max_id,
             'trial_paper_id' => $trial_paper_id,
+            'paper_end_time' => $paper_end_time,
         ]);
+    }
+
+    /**
+     * Get end timestamp for paper in timed test
+     *
+     * @author Karthik M <chynkm@gmail.com>
+     *
+     * @param  int $paper_id
+     *
+     * @return int
+     */
+    private function get_end_time_for_paper($paper_id)
+    {
+        $query = $this->db->select('allotted_time')->get_where('papers', ['id' => $paper_id]);
+        $allotted_time = $query->row()->allotted_time;
+
+        return intval(strtotime("+$allotted_time seconds"));
     }
 
     /**

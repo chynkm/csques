@@ -1,4 +1,16 @@
-<h1 class="bottom_border">Question <?php echo $question['fake_id']; ?></h1>
+<div class="row bottom_border question_number">
+    <div class="six columns">
+        <h1>Question <?php echo $question['fake_id']; ?></h1>
+    </div>
+    <div class="six columns">
+        <div id="countdownExample" class="u-pull-right">
+            <div class="values"></div>
+        </div><br/>
+        <?php if($this->session->userdata('question_trial_paper_id') != $this->session->userdata('question_trial_paper_max_id')): ?>
+        <a id="end_paper" class="u-pull-right">End exam</a>
+        <?php endif; ?>
+    </div>
+</div>
 <form method="post">
     <div class="row question_row">
         <div class="twelve columns">
@@ -48,16 +60,25 @@
     <button class="button u-pull-right submission_buttons" type="submit" name="submit" value="next">Next&nbsp;<i class="fi-arrow-right"></i></button>
     <?php endif; ?>
     <?php if($this->session->userdata('question_trial_paper_id') == $this->session->userdata('question_trial_paper_max_id')): ?>
-    <button class="button-primary u-pull-right submission_buttons" type="submit" name="submit" value="end_paper">Submit</button>
+    <button class="button u-pull-right submission_buttons" type="submit" name="submit" value="end_paper">Submit</button>
     <?php endif; ?>
 </form>
-<script src="<?php echo asset_url('js/zepto.min.js'); ?>"></script>
 <script type="text/javascript">
 var routes = {
     saveAnswerRoute: "<?php echo site_url('question/ajax_save_answer'); ?>",
+    showQuestionRoute: "<?php echo site_url('question/show'); ?>",
+    scorePageRoute: "<?php echo site_url('question/score'); ?>",
 };
 </script>
 <script src="<?php echo asset_url('js/question_show.js'); ?>"></script>
+
+<?php if(calculate_exam_remaining_time()): ?>
+<script src="<?php echo asset_url('js/easytimer.min.js'); ?>"></script>
+<script type="text/javascript">
+APP.question_show.displayPaperEndTime(<?php echo calculate_exam_remaining_time(); ?>);
+</script>
+<?php endif; ?>
+
 <?php if(! is_null($question['user_answer'])): ?>
 <script type="text/javascript">
 APP.question_show.clickAnswer("<?php echo $question['user_answer']; ?>");

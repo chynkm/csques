@@ -179,3 +179,34 @@ function get_client_ip() {
         $ipaddress = 'UNKNOWN';
     return $ipaddress;
 }
+
+/**
+ * Get the remaining time for an exam
+ * @todo - not used, need to be removed
+ *
+ * @author Karthik M <chynkm@gmail.com>
+ *
+ * @return string
+ */
+function get_remaining_time($date_time_end) {
+    $date_time_start = new DateTime();
+    $date_time_end = new DateTime($date_time_end);
+    $date_diff = $date_time_start->diff($date_time_end);
+    return $date_diff->format("%H:%i:%s");
+}
+
+/**
+ * Calculate the exam's remaining time
+ *
+ * @author Karthik M <chynkm@gmail.com>
+ *
+ * @return int|null
+ */
+function calculate_exam_remaining_time() {
+    $CI = &get_instance();
+    if(! is_null($CI->session->paper_end_time)) {
+        return intval($CI->session->paper_end_time - time());
+    }
+
+    return null;
+}

@@ -19,6 +19,7 @@ class Subject extends CI_Controller {
 
     /**
      * List all subjects
+     * @todo - Rename the title
      *
      * @author Karthik M <chynkm@gmail.com>
      *
@@ -27,9 +28,11 @@ class Subject extends CI_Controller {
     public function index()
     {
         $data['subjects'] = $this->subject_model->get_subject_slug_list();
+        $data['meta_description'] = 'MCQP - One stop solution to learn and practice solving previous years CBSE NET(UGC NET) question papers';
 
         $this->template
-            ->title('Subject listing', get_site_name())
+            // ->title('Subject listing', get_site_name())
+            ->title('CBSE NET(UGC NET) previous question papers', get_site_name())
             ->build('subject/index', $data);
     }
 
@@ -52,9 +55,10 @@ class Subject extends CI_Controller {
         }
 
         $data['subject'] = $this->subject_model->get_subject($subject_slug);
+        $data['meta_description'] = 'MCQP - Learn and practice solving previous years (UGC NET) '.$data['subject'].' question papers';
 
         $this->template
-            ->title('Paper listing', get_site_name())
+            ->title($data['subject'].' question papers', get_site_name())
             ->build('subject/show', $data);
     }
 

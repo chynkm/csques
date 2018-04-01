@@ -26,4 +26,21 @@ class Welcome extends CI_Controller {
             ->title('Welcome to CI', get_site_name())
             ->build('question/show', $data);
 	}
+
+    /**
+     * About page for the application
+     *
+     * @todo - need to complete the functionality
+     *
+     * @author Karthik M <chynkm@gmail.com>
+     *
+     * @return view
+     */
+	public function about()
+	{
+        $data['meta_description'] = 'MCQP is a free testing service rendered for all candidates attending CBSE NET(UGC NET)';
+		$this->template
+            ->title('About MCQP', get_site_name())
+            ->build('about', $data);
+	}
 }

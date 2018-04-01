@@ -68,7 +68,14 @@ table.table_bordered th, table.table_bordered td {
 .bottom_border {
   border-bottom: 1px solid #E1E1E1;
 }
+.question_number {
+  margin-bottom: 15px;
+}
+.question_number h1 {
+  line-height: 0.7;
+}
 
+/* NAVBAR styles BEGIN */
 .navbar {
   display: block;
   width: 100%;
@@ -97,3 +104,4 @@ table.table_bordered th, table.table_bordered td {
   line-height: 6.5rem;
   color: #222;
 }
+/* NAVBAR styles END */

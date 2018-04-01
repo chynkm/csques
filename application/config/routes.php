@@ -53,3 +53,4 @@ $route['default_controller'] = 'subject';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['subject/(:any)'] = 'subject/show/$1';
+$route['about'] = 'welcome/about';

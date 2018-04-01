@@ -30,6 +30,10 @@ class Question extends CI_Controller {
      */
     public function show($paper_slug = '')
     {
+        if($this->_paper_completed()) {
+            redirect('question/score');
+        }
+
         $data['question'] = $this->question_model->get_next_question();
 
         if($data['question'] === false) {
@@ -57,7 +61,7 @@ class Question extends CI_Controller {
 
         $this->question_model->create_trial_paper($paper_id, $test_exam);
 
-        redirect('question/show/');
+        redirect('question/show');
     }
 
     /**
@@ -80,6 +84,18 @@ class Question extends CI_Controller {
         }
 
         return $paper_id;
+    }
+
+    /**
+     * Check whether the score page is accessed by user
+     *
+     * @author Karthik M <chynkm@gmail.com>
+     *
+     * @return boolean
+     */
+    private function _paper_completed()
+    {
+        return $this->session->has_userdata('paper_completed');
     }
 
     /**

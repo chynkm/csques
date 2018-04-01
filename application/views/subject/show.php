@@ -13,7 +13,7 @@
             <td>
                 <a href="<?php echo site_url('question/index/'.$slug); ?>" class="button">List</a>
                 <a href="<?php echo site_url('question/paper/'.$slug); ?>" class="button">Try</a>
-                <button class="button-primary">Test</button>
+                <a href="<?php echo site_url('question/paper/'.$slug.'/test'); ?>" class="button">Test</a>
             </td>
         </tr>
         <?php endforeach; ?>
