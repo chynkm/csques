@@ -2,3 +2,5 @@ User-agent: *
 Disallow: /question/show
 Disallow: /question/score
 Disallow: /question/paper
+Disallow: /welcome/not_found
+Disallow: /welcome/thank_you

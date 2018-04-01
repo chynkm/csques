@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <title><?php echo $template['title']; ?></title>
         <meta name="description" content="<?php echo isset($meta_description) ? $meta_description: null; ?>">
-        <meta name="author" content="MCQP">
+        <meta name="author" content="<?php echo get_domain_name(); ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="<?php echo asset_url('css/normalize.min.css'); ?>">
@@ -21,6 +21,7 @@
                 <ul class="navbar-list">
                     <li class="navbar-item"><a class="navbar-link" href="<?php echo site_url('/'); ?>">MCQP</a></li>
                     <li class="navbar-item"><a class="navbar-link" href="<?php echo site_url('about'); ?>">ABOUT</a></li>
+                    <li class="navbar-item"><a class="navbar-link" href="<?php echo site_url('contact-us'); ?>">CONTACT US</a></li>
                 </ul>
             </div>
         </nav>
@@ -32,7 +33,7 @@
         <div class="footer">
             <div class="row">
                 <div class="twelve column">
-                    <p class="text-center">&copy; <?php echo date('Y').' '.get_site_name(); ?></p>
+                    <p class="text-center">&copy; <?php echo date('Y').' '.get_domain_name(); ?></p>
                 </div>
             </div>
             <script src="<?php echo asset_url('js/common.js'); ?>"></script>

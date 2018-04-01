@@ -9,6 +9,7 @@ APP.common = {
 
     init: function() {
         this.disableRightClick();
+        this.errorBlock();
     },
 
     disableRightClick: function() {
@@ -20,5 +21,12 @@ APP.common = {
         this.body.on('contextmenu', function(e){
             return false;
         });
+    },
+
+    errorBlock: function () {
+        // Highlight error fields if error is present
+        if($('.error_block').length) {
+            $('.error_block').closest('.form_group').find('input, textarea, select').addClass('has_error');
+        }
     },
 };

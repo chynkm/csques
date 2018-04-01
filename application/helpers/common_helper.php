@@ -49,6 +49,18 @@ function get_site_name()
 }
 
 /**
+ * Returns the domain name
+ *
+ * @author Karthik M <chynkm@gmail.com>
+ *
+ * @return string
+ */
+function get_domain_name()
+{
+    return 'MCQP.IN';
+}
+
+/**
  * Checks whether a user is logged in or not
  *
  * @author Karthik M <chynkm@gmail.com>

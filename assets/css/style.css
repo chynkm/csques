@@ -1,7 +1,6 @@
 html, body {
   height: 100%;
   margin: 0;
-  /*font-family: Georgia, "Times New Roman", Times, serif;*/
 }
 .main_content {
   padding-top: 20px;
@@ -73,6 +72,14 @@ table.table_bordered th, table.table_bordered td {
 }
 .question_number h1 {
   line-height: 0.7;
+}
+.has_error {
+  border: 1px solid #FC0815 !important;
+}
+.error_block {
+  color: #FC0815;
+  margin-top: -10px;
+  font-size: 12px;
 }
 
 /* NAVBAR styles BEGIN */
