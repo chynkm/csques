@@ -95,7 +95,7 @@ class Welcome extends CI_Controller {
         $this->load->library('email');
 
         $this->email->from('noreply@mcqp.in', 'MCQP - no reply');
-        $this->email->to('zzzkm@mailinator.com');
+        $this->email->to('chynkm@gmail.com');
 
         $this->email->subject('New contact form submission '.date('Y-m-d H:i:s'));
         $email_message = 'Name: '.$this->input->post('name').'<br/>';

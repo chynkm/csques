@@ -49,7 +49,7 @@ class Subject extends CI_Controller {
      */
     public function show($subject_slug)
     {
-        $data['papers'] = $this->subject_model->get_exam_list($subject_slug);
+        $data['papers'] = $this->subject_model->get_paper_list($subject_slug);
         if($data['papers'] === false) {
             redirect('/');
         }

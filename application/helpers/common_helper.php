@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Retrieve assets
+ * Retrieve assets with versioning for cache busting
  *
  * @author Karthik M <chynkm@gmail.com>
  *
@@ -11,7 +11,7 @@
  */
 function asset_url($value = '')
 {
-   return site_url('assets/'.$value);
+   return site_url('assets/'.$value).'?ver='.md5_file('assets/'.$value);
 }
 
 /**
@@ -147,7 +147,7 @@ function remove_space($value)
  *
  * @param  array $question
  *
- * @return string
+ * @return view
  */
 function get_answer_key_table($question)
 {

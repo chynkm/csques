@@ -6,9 +6,8 @@
         <meta name="description" content="<?php echo isset($meta_description) ? $meta_description: null; ?>">
         <meta name="author" content="<?php echo get_domain_name(); ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="<?php echo asset_url('css/normalize.min.css'); ?>">
-        <link rel="stylesheet" href="<?php echo asset_url('css/skeleton.min.css'); ?>">
+        <link rel="stylesheet" href="<?php echo asset_url('css/small.min.css'); ?>">
         <link rel="stylesheet" href="<?php echo asset_url('css/foundation-icons/foundation-icons.css'); ?>">
         <link rel="stylesheet" href="<?php echo asset_url('css/style.css'); ?>">
         <link rel="icon" type="image/png" href="images/favicon.png">
@@ -36,7 +35,7 @@
                     <p class="text-center">&copy; <?php echo date('Y').' '.get_domain_name(); ?></p>
                 </div>
             </div>
-            <script src="<?php echo asset_url('js/common.js'); ?>"></script>
+            <!-- <script src="<?php echo asset_url('js/common.js'); ?>"></script> -->
         </div>
     </body>
 </html>

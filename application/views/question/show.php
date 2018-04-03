@@ -23,14 +23,14 @@
         <div class="six columns question_options">
             <label class="option_label">
                 <input type="radio" class="option_radio" value="A">
-                <span class="option_label_body"><strong>A</strong>. <?php echo is_null($question['codes']) ? $question['option1'] : null; ?></span>
+                <span class="option_label_body"><strong>A</strong><?php echo is_null($question['codes']) ? '. '.$question['option1'] : null; ?></span>
                 <i class="answer_icon"></i>
             </label>
         </div>
         <div class="six columns question_options">
             <label class="option_label">
                 <input type="radio" class="option_radio" value="B">
-                <span class="option_label_body"><strong>B</strong>. <?php echo is_null($question['codes']) ? $question['option2'] : null; ?></span>
+                <span class="option_label_body"><strong>B</strong><?php echo is_null($question['codes']) ? '. '.$question['option2'] : null; ?></span>
                 <i class="answer_icon"></i>
             </label>
         </div>
@@ -39,14 +39,14 @@
         <div class="six columns question_options">
             <label class="option_label">
                 <input type="radio" class="option_radio" value="C">
-                <span class="option_label_body"><strong>C</strong>. <?php echo is_null($question['codes']) ? $question['option3'] : null; ?></span>
+                <span class="option_label_body"><strong>C</strong><?php echo is_null($question['codes']) ? '. '.$question['option3'] : null; ?></span>
                 <i class="answer_icon"></i>
             </label>
         </div>
         <div class="six columns question_options">
             <label class="option_label">
                 <input type="radio" class="option_radio" value="D">
-                <span class="option_label_body"><strong>D</strong>. <?php echo is_null($question['codes']) ? $question['option4'] : null; ?></span>
+                <span class="option_label_body"><strong>D</strong><?php echo is_null($question['codes']) ? '. '.$question['option4'] : null; ?></span>
                 <i class="answer_icon"></i>
             </label>
         </div>

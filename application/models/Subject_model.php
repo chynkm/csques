@@ -28,7 +28,7 @@ class Subject_model extends CI_Model
     }
 
     /**
-     * Get exam listing
+     * Get paper listing
      *
      * @author Karthik M <chynkm@gmail.com>
      *
@@ -36,19 +36,26 @@ class Subject_model extends CI_Model
      *
      * @return array|bool
      */
-    public function get_exam_list($subject_slug)
+    public function get_paper_list($subject_slug)
     {
-        $this->db->select('p.slug, paper, subject, month, year')
+        $this->db->select('p.slug, p.paper, s.subject, p.month, p.year, count(q.id) question_count')
             ->where('s.slug', $subject_slug)
             ->from('papers p')
-            ->join('subjects s', 's.id = subject_id');
+            ->join('questions q', 'p.id = paper_id')
+            ->join('subjects s', 's.id = p.subject_id')
+            ->group_by('p.id');
 
         $query = $this->db->order_by('subject ASC, year DESC, month ASC')->get();
 
         if($query->num_rows()) {
             $data = [];
             foreach ($query->result() as $row) {
-                $data[$row->slug] = $row->subject.' Paper '.$row->paper.' '.ucfirst($row->month).' '.$row->year;
+                $paper_info = [
+                    'slug' => $row->slug,
+                    'name' => $row->subject.' Paper '.$row->paper.' '.ucfirst($row->month).' '.$row->year,
+                    'question_count' => $row->question_count,
+                ];
+                $data[] = $paper_info;
             }
             return $data;
         }

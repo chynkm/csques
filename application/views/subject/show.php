@@ -3,17 +3,19 @@
     <thead>
         <tr>
             <th class="th_exam">Paper</th>
+            <th>No. of questions</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($papers as $slug => $paper): ?>
+        <?php foreach ($papers as $paper): ?>
         <tr>
-            <td><?php echo $paper; ?></td>
+            <td><?php echo $paper['name']; ?></td>
+            <td><?php echo $paper['question_count']; ?></td>
             <td>
-                <a href="<?php echo site_url('question/index/'.$slug); ?>" class="button">List</a>
-                <a href="<?php echo site_url('question/paper/'.$slug); ?>" class="button">Try</a>
-                <a href="<?php echo site_url('question/paper/'.$slug.'/test'); ?>" class="button">Test</a>
+                <a href="<?php echo site_url('question/index/'.$paper['slug']); ?>" class="button">List</a>
+                <a href="<?php echo site_url('question/paper/'.$paper['slug']); ?>" class="button">Try</a>
+                <a href="<?php echo site_url('question/paper/'.$paper['slug'].'/test'); ?>" class="button">Test</a>
             </td>
         </tr>
         <?php endforeach; ?>
