@@ -13,12 +13,12 @@
     <div class="row">
         <div class="six columns form_group">
             <label>Name</label>
-            <input class="u-full-width" type="text" name="name" placeholder="John Doe" value="<?php echo populate_value('name', $contact_form); ?>">
+            <input class="u-full-width" type="text" name="name" placeholder="Name" value="<?php echo populate_value('name', $contact_form); ?>">
             <?php echo form_error('name'); ?>
         </div>
         <div class="six columns form_group">
             <label>Email</label>
-            <input class="u-full-width" type="email" name="email" placeholder="johndoe@example.com" value="<?php echo populate_value('email', $contact_form); ?>">
+            <input class="u-full-width" type="email" name="email" placeholder="Email" value="<?php echo populate_value('email', $contact_form); ?>">
             <?php echo form_error('email'); ?>
         </div>
     </div>
