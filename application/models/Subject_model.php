@@ -16,6 +16,7 @@ class Subject_model extends CI_Model
         $query = $this->db->select('slug, subject')
             ->from('subjects')
             ->order_by('subject ASC')
+            ->where('approved', 1)
             ->get();
 
         $data = [];
@@ -40,6 +41,7 @@ class Subject_model extends CI_Model
     {
         $this->db->select('p.slug, p.paper, s.subject, p.month, p.year, count(q.id) question_count')
             ->where('s.slug', $subject_slug)
+            ->where('p.approved', 1)
             ->from('papers p')
             ->join('questions q', 'p.id = paper_id')
             ->join('subjects s', 's.id = p.subject_id')

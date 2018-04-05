@@ -99,26 +99,6 @@ class Question extends CI_Controller {
     }
 
     /**
-     * List all questions
-     *
-     * @author Karthik M <chynkm@gmail.com>
-     *
-     * @param  string $paper_slug
-     *
-     * @return view
-     */
-    public function index($paper_slug)
-    {
-        $paper_id = $this->_validate_paper_slug($paper_slug);
-
-        $data['questions'] = $this->question_model->get_all_questions($paper_id);
-
-        $this->template
-            ->title('Question Listing', get_site_name())
-            ->build('question/index', $data);
-    }
-
-    /**
      * Display score
      *
      * @author Karthik M <chynkm@gmail.com>

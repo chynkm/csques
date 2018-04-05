@@ -19,5 +19,5 @@
     </tbody>
 </table>
 <a href="<?php echo site_url('subject/'.$attended_paper_slug_and_subject_slug['subject_slug']); ?>" class="button"><i class="fi-home"></i>&nbsp;Subject home</a>
-<a href="<?php echo site_url('question/paper/'.$attended_paper_slug_and_subject_slug['paper_slug']); ?>" class="button u-pull-right"><i class="fi-refresh"></i>&nbsp;Try again</a>
+<a href="<?php echo site_url('question/paper/'.$attended_paper_slug_and_subject_slug['paper_slug'].($this->session->paper_end_time ? '/true' : '')); ?>" class="button u-pull-right"><i class="fi-refresh"></i>&nbsp;Try again</a>
 

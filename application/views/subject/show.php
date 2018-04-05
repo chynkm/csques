@@ -13,7 +13,6 @@
             <td><?php echo $paper['name']; ?></td>
             <td><?php echo $paper['question_count']; ?></td>
             <td>
-                <a href="<?php echo site_url('question/index/'.$paper['slug']); ?>" class="button">List</a>
                 <a href="<?php echo site_url('question/paper/'.$paper['slug']); ?>" class="button">Try</a>
                 <a href="<?php echo site_url('question/paper/'.$paper['slug'].'/test'); ?>" class="button">Test</a>
             </td>
