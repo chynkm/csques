@@ -1,5 +1,5 @@
 <?php /* Copied from https://yoast.com/privacy-policy/ */ ?>
-<h1 class="bottom_border">Privacy policy</h1>
+<center><h1 class="bottom_border">Privacy policy</h1></center>
 <p><?php echo get_domain_name(); ?> has created this privacy statement in order to show our commitment to your and our privacy. This page discloses the information gathering and dissemination practices for the website <?php echo get_domain_name(); ?></p>
 
 <h4>Information Automatically Logged</h4>

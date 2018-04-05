@@ -5,13 +5,16 @@ html, body {
 }
 .main_content {
   padding-top: 20px;
-  min-height: 94%;
-  margin-bottom: -60px;
+  min-height: 92%;
+  margin-bottom: -50px;
 }
 .footer {
   height: 50px;
   border-top: 1px solid #E1E1E1;
   padding-top: 15px;
+  font-weight: 600;
+  font-size: 12px;
+  color: #0145FE;
 }
 .footer_push {
   height: 100px;
@@ -82,6 +85,48 @@ table.table_bordered th, table.table_bordered td {
   margin-top: -10px;
   font-size: 12px;
 }
+a:visited, a:link {
+  color: #222;
+  text-decoration: none;
+}
+a:hover{
+  color: #0145FE;
+}
+a.button:hover,
+input[type=submit].button:focus,
+input[type=reset].button:focus,
+input[type=button].button:focus,
+button.button:focus,
+button.button:hover,
+input[type=submit].button:hover,
+input[type=reset].button:hover,
+input[type=button].button:hover {
+  color: #FFF;
+  background-color: #0145FE;
+  border-color: #0145FE;
+}
+.button.button-primary,
+button.button-primary,
+input[type=submit].button-primary,
+input[type=reset].button-primary,
+input[type=button].button-primary {
+  background-color: #0145FE;
+  border-color: #0145FE;
+}
+input[type=tel]:focus,
+input[type=url]:focus,
+input[type=password]:focus,
+input[type=email]:focus,
+input[type=number]:focus,
+input[type=search]:focus,
+input[type=text]:focus,
+select:focus,
+textarea:focus {
+  border-color: #456BE6;
+}
+.theme_color{
+  color: #0145FE;
+}
 
 /* NAVBAR styles BEGIN */
 .navbar {
@@ -90,9 +135,7 @@ table.table_bordered th, table.table_bordered td {
   height: 6.5rem;
   background: #fff;
   z-index: 99;
-  border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
-  background-color: #0069ff;
 }
 .navbar-list {
   list-style: none;
@@ -112,5 +155,8 @@ table.table_bordered th, table.table_bordered td {
   text-decoration: none;
   line-height: 6.5rem;
   color: #222;
+}
+a.navbar-link:hover, a.navbar-link:visited, a.navbar-link:link  {
+  color: #0145FE;
 }
 /* NAVBAR styles END */

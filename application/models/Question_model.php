@@ -33,6 +33,10 @@ class Question_model extends CI_Model
             ->join('question_trial_paper qtp', 'qtp.question_id = q.id')
             ->get_where('questions q', ['qtp.id' => $this->session->userdata('question_trial_paper_id')]);
 
+        $query = $this->db->select('q.id, question, codes, option1, option2, option3, option4, answer, user_answer, fake_id')
+            ->join('question_trial_paper qtp', 'qtp.question_id = q.id', 'left')
+            ->get_where('questions q', ['q.id' => 351]);
+
         if($query->num_rows()) {
             return $query->row_array();
         }

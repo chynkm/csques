@@ -1,4 +1,4 @@
-<h1 class="bottom_border">Contact us</h1>
+<center><h1 class="bottom_border">Contact us</h1></center>
 
 <p>Since time is of essence, please read the following guidelines before filling out the form:</p>
 
@@ -27,6 +27,6 @@
         <textarea class="u-full-width" placeholder="Message" name="message"><?php echo populate_value('message', $contact_form); ?></textarea>
         <?php echo form_error('message'); ?>
     </div>
-    <input class="button-primary" type="submit" value="Send">
+    <input class="button" type="submit" value="Send">
 </form>
 
