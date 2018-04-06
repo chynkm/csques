@@ -1,4 +1,4 @@
-<center><h1 class="bottom_border"><?php echo $subject; ?>&nbsp;papers</h1></center>
+<center><h1 class="bottom_border theme_color"><?php echo $subject; ?>&nbsp;papers</h1></center>
 <table class="u-full-width">
     <thead>
         <tr>

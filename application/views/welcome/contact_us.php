@@ -1,4 +1,4 @@
-<center><h1 class="bottom_border">Contact us</h1></center>
+<center><h1 class="bottom_border theme_color">Contact us</h1></center>
 
 <p>Since time is of essence, please read the following guidelines before filling out the form:</p>
 

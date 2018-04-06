@@ -1,4 +1,4 @@
-<center><h1 class="bottom_border">About MCQP</h1></center>
+<center><h1 class="bottom_border theme_color">About MCQP</h1></center>
 
 <p>MCQP stands for <strong>M</strong>ultiple <strong>C</strong>hoice <strong>Q</strong>uestion <strong>P</strong>aper.</p>
 

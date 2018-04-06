@@ -1,4 +1,4 @@
-<h1 class="bottom_border">Score</h1>
+<h1 class="bottom_border theme_color">Score</h1>
 <table class="u-full-width">
     <tbody>
         <tr>

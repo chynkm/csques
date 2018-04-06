@@ -8,16 +8,15 @@ html, body {
   min-height: 92%;
   margin-bottom: -50px;
 }
-.footer {
+.footer_push {
   height: 50px;
+}
+.footer {
   border-top: 1px solid #E1E1E1;
   padding-top: 15px;
   font-weight: 600;
   font-size: 12px;
   color: #0145FE;
-}
-.footer_push {
-  height: 100px;
 }
 .text-center {
   text-align: center;
@@ -88,6 +87,7 @@ table.table_bordered th, table.table_bordered td {
 a:visited, a:link {
   color: #222;
   text-decoration: none;
+  border-bottom: 1px dotted #000000;
 }
 a:hover{
   color: #0145FE;
@@ -158,5 +158,6 @@ textarea:focus {
 }
 a.navbar-link:hover, a.navbar-link:visited, a.navbar-link:link  {
   color: #0145FE;
+  border-bottom: none;
 }
 /* NAVBAR styles END */

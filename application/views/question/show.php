@@ -1,5 +1,5 @@
 <div class="row bottom_border question_number">
-    <div class="six columns">
+    <div class="six columns theme_color">
         <h1>Question <?php echo $question['fake_id']; ?></h1>
     </div>
     <div class="six columns">
