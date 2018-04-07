@@ -137,7 +137,12 @@ class Question_model extends CI_Model
         $paper_end_time = $test_exam ? $this->get_end_time_for_paper($paper_id) : null;
         $this->db->insert('trial_papers', [
             'paper_id' => $paper_id,
-            'ip_address' => get_client_ip(),
+            'ip_address' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR']: null,
+            'http_client_ip' => isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP']: null,
+            'http_x_forwarded_for' => isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR']: null,
+            'http_x_forwarded' => isset($_SERVER['HTTP_X_FORWARDED']) ? $_SERVER['HTTP_X_FORWARDED']: null,
+            'http_forwarded_for' => isset($_SERVER['HTTP_FORWARDED_FOR']) ? $_SERVER['HTTP_FORWARDED_FOR']: null,
+            'http_forwarded' => isset($_SERVER['HTTP_FORWARDED']) ? $_SERVER['HTTP_FORWARDED']: null,
             'end_time' => $paper_end_time,
         ]);
 

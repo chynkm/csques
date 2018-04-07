@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="<?php echo asset_url('css/small.min.css'); ?>">
         <link rel="stylesheet" href="<?php echo asset_url('css/foundation-icons/foundation-icons.css'); ?>">
         <link rel="stylesheet" href="<?php echo asset_url('css/style.css'); ?>">
-        <link rel="icon" type="image/png" href="images/favicon.png">
+        <link rel="icon" type="image/png" href="<?php echo asset_url('images/favicon.ico'); ?>">
         <link rel="canonical" href="<?php echo current_url(); ?>">
         <script src="<?php echo asset_url('js/zepto.min.js'); ?>"></script>
     </head>

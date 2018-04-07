@@ -84,12 +84,12 @@ table.table_bordered th, table.table_bordered td {
   margin-top: -10px;
   font-size: 12px;
 }
-a:visited, a:link {
+a:visited, a:link, a{
   color: #222;
   text-decoration: none;
   border-bottom: 1px dotted #000000;
 }
-a:hover{
+a:hover {
   color: #0145FE;
 }
 a.button:hover,
