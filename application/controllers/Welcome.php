@@ -109,7 +109,7 @@ class Welcome extends CI_Controller {
     public function thank_you()
     {
         $this->template
-            ->title('404 not found', get_site_name())
+            ->title('Thank you', get_site_name())
             ->build('welcome/thank_you');
     }
 }

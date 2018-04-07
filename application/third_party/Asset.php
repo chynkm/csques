@@ -32,17 +32,18 @@ class Asset {
                 if ( is_dir($source_directory . '/' . $file) ) {
                     self::recursive_copy($source_directory . '/' . $file,$destination_directory . '/' . $file);
                 } else {
-                    if($file != 'index.html' && (! in_array($source_directory, [ASSETPATH.'assets/q-images', ASSETPATH.'assets/css/foundation-icons']))) {
+                    $destinationFileName = $file;
+                    if($file != 'index.html' && $source_directory != ASSETPATH.'assets/q-images') {
                         $explodedFileName = explode('.', $file);
                         $fileExtension = array_pop($explodedFileName);
 
-                        if(end($explodedFileName) == 'min') {
-                            $fileExtension = array_pop($explodedFileName).'.'.$fileExtension;
+                        if(!in_array($fileExtension, ['eot', 'svg', 'ttf', 'woff'])) {
+                            if(end($explodedFileName) == 'min') {
+                                $fileExtension = array_pop($explodedFileName).'.'.$fileExtension;
+                            }
+                            $destinationFileName = implode('.', $explodedFileName).'-'.md5_file($source_directory.'/'.$file).'.'.$fileExtension;
+                            echo $destinationFileName." \n";
                         }
-                        $destinationFileName = implode('.', $explodedFileName).'-'.md5_file($source_directory.'/'.$file).'.'.$fileExtension;
-                        echo $destinationFileName." \n";
-                    } else {
-                        $destinationFileName = $file;
                     }
                     copy($source_directory . '/' . $file,$destination_directory . '/' . $destinationFileName);
                 }
