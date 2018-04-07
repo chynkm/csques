@@ -32,7 +32,7 @@ class Asset {
                 if ( is_dir($source_directory . '/' . $file) ) {
                     self::recursive_copy($source_directory . '/' . $file,$destination_directory . '/' . $file);
                 } else {
-                    if($file != 'index.html' && $source_directory != ASSETPATH.'assets/q-images') {
+                    if($file != 'index.html' && (! in_array($source_directory, [ASSETPATH.'assets/q-images', ASSETPATH.'assets/css/foundation-icons']))) {
                         $explodedFileName = explode('.', $file);
                         $fileExtension = array_pop($explodedFileName);
 
