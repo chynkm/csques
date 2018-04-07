@@ -17,6 +17,10 @@ APP.common = {
             e.preventDefault();
             return false;
         });
+
+        this.body.on("contextmenu",function(){
+           return false;
+        });
     },
 
     errorBlock: function () {
