@@ -9,14 +9,14 @@ html, body {
   margin-bottom: -50px;
 }
 .footer_push {
-  height: 50px;
+  height: 100px;
 }
 .footer {
   border-top: 1px solid #E1E1E1;
   padding-top: 15px;
   font-weight: 600;
   font-size: 12px;
-  color: #0145FE;
+  color: #555555;
 }
 .text-center {
   text-align: center;

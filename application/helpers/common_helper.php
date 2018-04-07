@@ -5,13 +5,23 @@
  *
  * @author Karthik M <chynkm@gmail.com>
  *
- * @param  string $value
+ * @param  string $filename
  *
  * @return string
  */
-function asset_url($value = '')
+function asset_url($filename = '')
 {
-   return site_url('assets/'.$value).'?ver='.md5_file('assets/'.$value);
+    if(ENVIRONMENT == 'development') {
+        return site_url('assets/'.$filename).'?ver='.md5_file('assets/'.$filename);
+    }
+
+    $explodedFileName = explode('.', $filename);
+    $fileExtension = array_pop($explodedFileName);
+    if(end($explodedFileName) == 'min') {
+        $fileExtension = array_pop($explodedFileName).'.'.$fileExtension;
+    }
+    $filename = implode('.', $explodedFileName).'-'.md5_file('assets/'.$filename).'.'.$fileExtension;
+    return '//assets.mcqp.in/'.$filename;
 }
 
 /**
@@ -58,19 +68,6 @@ function get_site_name()
 function get_domain_name()
 {
     return 'MCQP.IN';
-}
-
-/**
- * Checks whether a user is logged in or not
- *
- * @author Karthik M <chynkm@gmail.com>
- *
- * @return boolean
- */
-function check_login()
-{
-    $CI = get_instance();
-    return ($CI->session->userdata('user_validated') && $CI->session->userdata('user_id')) ? TRUE : FALSE;
 }
 
 /**
@@ -190,21 +187,6 @@ function get_client_ip() {
     else
         $ipaddress = 'UNKNOWN';
     return $ipaddress;
-}
-
-/**
- * Get the remaining time for an exam
- * @todo - not used, need to be removed
- *
- * @author Karthik M <chynkm@gmail.com>
- *
- * @return string
- */
-function get_remaining_time($date_time_end) {
-    $date_time_start = new DateTime();
-    $date_time_end = new DateTime($date_time_end);
-    $date_diff = $date_time_start->diff($date_time_end);
-    return $date_diff->format("%H:%i:%s");
 }
 
 /**

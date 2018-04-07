@@ -35,7 +35,7 @@
                     <p class="text-center">Copyright &copy; <?php echo date('Y').' '.get_domain_name(); ?></p>
                 </div>
             </div>
-            <!-- <script src="<?php echo asset_url('js/common.js'); ?>"></script> -->
+            <script src="<?php echo asset_url('js/common.js'); ?>"></script>
         </div>
     </body>
 </html>
