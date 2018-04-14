@@ -13,6 +13,16 @@
         <link rel="icon" type="image/png" href="<?php echo asset_url('images/favicon.ico'); ?>">
         <link rel="canonical" href="<?php echo current_url(); ?>">
         <script src="<?php echo asset_url('js/zepto.min.js'); ?>"></script>
+        <?php if(ENVIRONMENT == 'production'): ?>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117514078-1"></script>
+        <script type="text/javascript">
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'UA-117514078-1');
+        </script>
+        <?php endif; ?>
     </head>
     <body>
         <nav class="navbar">
