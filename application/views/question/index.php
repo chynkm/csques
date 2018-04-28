@@ -26,3 +26,4 @@
     <?php endforeach; ?>
   </tbody>
 </table>
+<script src="<?php echo asset_url('js/xfeed.js'); ?>"></script>
