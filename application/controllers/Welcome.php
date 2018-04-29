@@ -136,4 +136,10 @@ class Welcome extends CI_Controller {
             ->title('404 not found', get_site_name())
             ->build('welcome/thank_you');
     }
+
+    public function ajax_get_plugin()
+    {
+        $data = [];
+        return $this->load->view('welcome/plugin', $data);
+    }
 }

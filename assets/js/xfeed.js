@@ -14,13 +14,11 @@ var xfeed = {
     os: null,
     osVersion: null,
     mobile: null,
+    userAgent: null,
 
     onFeedbackClick: function(e) {
         e.stopPropagation();
         e.preventDefault();
-
-        // document.body.style.cursor = 'crosshair';
-        // console.log(document.body);
 
         var parents = [];
         var element = e.target || e.srcElement;
@@ -50,6 +48,7 @@ var xfeed = {
         this.deviceHeight = window.screen.availHeight;
         this.vertex.x = e.pageX;
         this.vertex.y = e.pageY;
+        this.userAgent = window.navigator.userAgent;
 
         this.setBrowserAndOS();
         this.echoValues();
@@ -133,16 +132,38 @@ var xfeed = {
         console.log('device height: '+ this.deviceHeight)
         console.log('vertex.x: '+ this.vertex.x)
         console.log('vertex.y: '+ this.vertex.y)
+        console.log('user agent: '+ this.userAgent)
     },
 
     displayForm: function() {
+        var ajax = new XMLHttpRequest();
+        ajax.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("demo").innerHTML = this.responseText;
+            } else {
+                console.log('failed');
+            }
+        };
+        xhttp.open("GET", "ajax_info.txt", true);
+        xhttp.send();
+    },
 
+    prepareFrame: function() {
+        var ifrm = document.createElement("iframe");
+        ifrm.setAttribute("src", "http://lbit.in/");
+        ifrm.style.width = "640px";
+        ifrm.style.height = "480px";
+        document.body.appendChild(ifrm);
     },
 
 };
 
 document.addEventListener('click', function(e) { xfeed.onFeedbackClick(e); });
 
-window.onload = function() {
+document.body.style.cursor = "url(http://cscbse.test/assets/img/xfeed_target.png),auto";
+
+/*document.onload = function() {
     document.body.style.cursor = "url(http://w17.snunit.k12.il/images/big_arrow.png),auto";
-};
+};*/
+
+// document.getElementById("div1").classList.remove("classToBeRemoved");
