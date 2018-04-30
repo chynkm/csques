@@ -12,7 +12,7 @@
 </style>
 </head>
 <body>
-<img src="<?php echo asset_url('img/xfeed_icon.png'); ?>" alt="xfeed" class="xfeed_btn" id="xfeed_button" width="50px">
+<img src="<?php echo asset_url('img/plus.png'); ?>" alt="xfeed" class="xfeed_btn" id="xfeed_plugin_button" width="50px">
 <div class="feedback_form hidden">
     <textarea class="feedback"></textarea>
     <input type="button" class="submit" value="submit">

@@ -17,8 +17,8 @@ var xfeed = {
     userAgent: null,
 
     onFeedbackClick: function(e) {
-        e.stopPropagation();
-        e.preventDefault();
+        // e.stopPropagation();
+        // e.preventDefault();
 
         var parents = [];
         var element = e.target || e.srcElement;
@@ -52,6 +52,7 @@ var xfeed = {
 
         this.setBrowserAndOS();
         this.echoValues();
+        this.xfeed_close();
     },
 
     setBrowserAndOS: function() {
@@ -126,10 +127,10 @@ var xfeed = {
         console.log("Mobile : " + this.mobile);
         console.log('path: '+ this.elementPath);
         console.log('url: '+this.url)
-        console.log('document width: '+ this.documentWidth)
-        console.log('document height: '+ this.documentHeight)
         console.log('device width: '+ this.deviceWidth)
         console.log('device height: '+ this.deviceHeight)
+        console.log('document width: '+ this.documentWidth)
+        console.log('document height: '+ this.documentHeight)
         console.log('vertex.x: '+ this.vertex.x)
         console.log('vertex.y: '+ this.vertex.y)
         console.log('user agent: '+ this.userAgent)
@@ -148,22 +149,9 @@ var xfeed = {
         xhttp.send();
     },
 
-    prepareFrame: function() {
-        var ifrm = document.createElement("iframe");
-        ifrm.setAttribute("src", "http://lbit.in/");
-        ifrm.style.width = "640px";
-        ifrm.style.height = "480px";
-        document.body.appendChild(ifrm);
-    },
-
 };
 
-document.addEventListener('click', function(e) { xfeed.onFeedbackClick(e); });
-
-document.body.style.cursor = "url(http://cscbse.test/assets/img/xfeed_target.png),auto";
-
-/*document.onload = function() {
-    document.body.style.cursor = "url(http://w17.snunit.k12.il/images/big_arrow.png),auto";
-};*/
-
-// document.getElementById("div1").classList.remove("classToBeRemoved");
+window.onload = function() {
+    document.body.style.cursor = "url(http://localhost/xfeed/xfeed_target.png),auto";
+    document.addEventListener('click', function(e) { xfeed.onFeedbackClick(e); });
+};

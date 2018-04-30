@@ -26,32 +26,25 @@
     <?php endforeach; ?>
   </tbody>
 </table>
-<!-- <iframe src="<?php echo site_url('welcome/ajax_get_plugin'); ?>"></iframe> -->
+<img src="http://localhost/xfeed/minus.png" alt="xfeed" id="xfeed_button" width="50px" style="position: fixed; right: 0px; bottom: 0px;">
 <script type="text/javascript">
-window.onload = function() {
+document.getElementById('xfeed_button').addEventListener('click', function() {
     var element = document.createElement('iframe');
     element.setAttribute('class', 'xfeed_plugin');
-    element.setAttribute('src', "<?php echo site_url('welcome/ajax_get_plugin'); ?>");
+    element.setAttribute('id', 'xfeed_id_plugin');
+    element.setAttribute('src', "http://localhost/xfeed/plugin.html");
     element.style.border = 0;
     element.style.position = 'fixed';
     element.style.right = 0;
     element.style.bottom = 0;
     element.style.width = '100%';
     element.style.height = '100%';
+    // element.style.zIndex = 1000;
     document.body.appendChild(element);
+});
 
-    /*var ajax = new XMLHttpRequest();
-    var element = document.createElement('div');
-    element.setAttribute('class', 'xfeed_plugin');
-    ajax.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            element.innerHTML = this.responseText;
-            document.body.appendChild(element);
-            console.log(element.innerHTML);
-            // document.getElementsByClassName('xfeed_plugin').addEventListener('click');
-        }
-    };
-    ajax.open("GET", "<?php echo site_url('welcome/ajax_get_plugin'); ?>", true);
-    ajax.send();*/
-}
 </script>
+
+
+
+
