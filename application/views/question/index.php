@@ -26,25 +26,8 @@
     <?php endforeach; ?>
   </tbody>
 </table>
-<img src="http://localhost/xfeed/minus.png" alt="xfeed" id="xfeed_button" width="50px" style="position: fixed; right: 0px; bottom: 0px;">
-<script type="text/javascript">
-document.getElementById('xfeed_button').addEventListener('click', function() {
-    var element = document.createElement('iframe');
-    element.setAttribute('class', 'xfeed_plugin');
-    element.setAttribute('id', 'xfeed_id_plugin');
-    element.setAttribute('src', "http://localhost/xfeed/plugin.html");
-    element.style.border = 0;
-    element.style.position = 'fixed';
-    element.style.right = 0;
-    element.style.bottom = 0;
-    element.style.width = '100%';
-    element.style.height = '100%';
-    // element.style.zIndex = 1000;
-    document.body.appendChild(element);
-});
-
-</script>
-
+<script type="text/javascript" src="http://localhost/xfeed/plugin.js"></script>
+<!-- <script type="text/javascript" src="http://localhost/xfeed/xfeed.js"></script> -->
 
 
 

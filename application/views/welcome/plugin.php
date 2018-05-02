@@ -12,11 +12,11 @@
 </style>
 </head>
 <body>
-<img src="<?php echo asset_url('img/plus.png'); ?>" alt="xfeed" class="xfeed_btn" id="xfeed_plugin_button" width="50px">
+<!-- <img src="http://localhost/xfeed/plus.png" alt="xfeed" class="xfeed_btn" id="xfeed_plugin_button" width="50px"> -->
 <div class="feedback_form hidden">
     <textarea class="feedback"></textarea>
     <input type="button" class="submit" value="submit">
 </div>
 </body>
-<script src="<?php echo asset_url('js/xfeed.js'); ?>"></script>
+<script src="http://localhost/xfeed/xfeed.js"></script>
 </html>

@@ -15,6 +15,7 @@ var xfeed = {
     osVersion: null,
     mobile: null,
     userAgent: null,
+    saveFeedbackURL: 'http://localhost/xfeed/save_feedback.php',
 
     onFeedbackClick: function(e) {
         // e.stopPropagation();
@@ -52,7 +53,7 @@ var xfeed = {
 
         this.setBrowserAndOS();
         this.echoValues();
-        this.xfeed_close();
+        this.sendFeedback();
     },
 
     setBrowserAndOS: function() {
@@ -120,13 +121,13 @@ var xfeed = {
     },
 
     echoValues: function() {
-        console.log("Browser : " + this.browser);
-        console.log("Browser version : " + this.version);
-        console.log("Operating System : " + this.os);
-        console.log("Operating System version : " + this.osversion);
-        console.log("Mobile : " + this.mobile);
+        console.log('Browser : '+ this.browser);
+        console.log('Browser version : '+ this.version);
+        console.log('Operating System : '+ this.os);
+        console.log('Operating System version : '+ this.osversion);
+        console.log('Mobile : '+ this.mobile);
         console.log('path: '+ this.elementPath);
-        console.log('url: '+this.url)
+        console.log('url: '+ this.url)
         console.log('device width: '+ this.deviceWidth)
         console.log('device height: '+ this.deviceHeight)
         console.log('document width: '+ this.documentWidth)
@@ -134,6 +135,36 @@ var xfeed = {
         console.log('vertex.x: '+ this.vertex.x)
         console.log('vertex.y: '+ this.vertex.y)
         console.log('user agent: '+ this.userAgent)
+    },
+
+    collectPostElements: function() {
+        return "browser='"+this.browser+
+            "'&browser_version='"+this.version+
+            "'&os='"+this.os+
+            "'&os_version='"+this.osversion+
+            "'&mobile='"+this.mobile+
+            "'&element_path='"+this.elementPath+
+            "'&url='"+this.url+
+            "'&device_width='"+this.deviceWidth+
+            "'&device_height='"+this.deviceHeight+
+            "'&document_width='"+this.documentWidth+
+            "'&document_height='"+this.documentHeight+
+            "'&vertex_x='"+this.vertex.x+
+            "'&vertex_y='"+this.vertex.y+
+            "'&user_agent='"+this.userAgent+"'";
+    },
+
+    sendFeedback: function() {
+        var ajax = new XMLHttpRequest();
+        ajax.open('POST', this.saveFeedbackURL, true);
+        ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        ajax.onreadystatechange = function () {
+            if (this.readyState != 4 || this.status != 200) {
+                return;
+            }
+            console.log(this.responseText);
+        };
+        ajax.send(this.collectPostElements());
     },
 
     displayForm: function() {
