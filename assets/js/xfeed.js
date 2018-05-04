@@ -15,14 +15,36 @@ var xfeed = {
     osVersion: null,
     mobile: null,
     userAgent: null,
-    saveFeedbackURL: 'http://localhost/xfeed/save_feedback.php',
+    collectFeedback: false,
+    elementHtml: null,
+    saveFeedbackURL: 'http://xfeed.test/save_feedback.php',
 
     onFeedbackClick: function(e) {
-        // e.stopPropagation();
-        // e.preventDefault();
-
-        var parents = [];
         var element = e.target || e.srcElement;
+        if(this.collectFeedback && element.id != 'remove_xfeed_button') {
+            e.stopPropagation();
+            e.preventDefault();
+
+            this.elementHtml = element.innerHTML;
+            this.elementPath = this.getElementPath(element);
+            this.url = window.location.href;
+            this.documentWidth = document.documentElement.clientWidth;
+            this.documentHeight = document.documentElement.clientHeight;
+            this.deviceWidth = window.screen.availWidth;
+            this.deviceHeight = window.screen.availHeight;
+            this.vertex.x = e.pageX;
+            this.vertex.y = e.pageY;
+            this.userAgent = window.navigator.userAgent;
+
+            this.setBrowserAndOS();
+            this.echoValues();
+            this.sendFeedback();
+        }
+    },
+
+    getElementPath: function(element) {
+        var parents = [];
+        parents.push(element);
 
         while (element.parentElement && !element.parentElement.matches('html')) {
             parents.push(element = element.parentElement);
@@ -41,19 +63,7 @@ var xfeed = {
             domTree.push(element.nodeName.toLowerCase()+domSuffix)
         });
 
-        this.elementPath = domTree.reverse().join(' > ');
-        this.url = window.location.href;
-        this.documentWidth = document.documentElement.clientWidth;
-        this.documentHeight = document.documentElement.clientHeight;
-        this.deviceWidth = window.screen.availWidth;
-        this.deviceHeight = window.screen.availHeight;
-        this.vertex.x = e.pageX;
-        this.vertex.y = e.pageY;
-        this.userAgent = window.navigator.userAgent;
-
-        this.setBrowserAndOS();
-        this.echoValues();
-        this.sendFeedback();
+        return domTree.reverse().join(' > ');
     },
 
     setBrowserAndOS: function() {
@@ -127,6 +137,7 @@ var xfeed = {
         console.log('Operating System version : '+ this.osversion);
         console.log('Mobile : '+ this.mobile);
         console.log('path: '+ this.elementPath);
+        console.log('html: '+ this.elementHtml);
         console.log('url: '+ this.url)
         console.log('device width: '+ this.deviceWidth)
         console.log('device height: '+ this.deviceHeight)
@@ -144,6 +155,7 @@ var xfeed = {
             "'&os_version='"+this.osversion+
             "'&mobile='"+this.mobile+
             "'&element_path='"+this.elementPath+
+            "'&element_html='"+this.elementHtml+
             "'&url='"+this.url+
             "'&device_width='"+this.deviceWidth+
             "'&device_height='"+this.deviceHeight+
@@ -180,9 +192,64 @@ var xfeed = {
         xhttp.send();
     },
 
+    init: function() {
+        this.createImage();
+        this.beginFeedback();
+    },
+
+    createImage: function() {
+        var img = this.createImageTemplate('http://localhost/xfeed/minus.png');
+        img.setAttribute('id', 'xfeed_button');
+        document.body.appendChild(img);
+    },
+
+    createImageTemplate: function(image_path) {
+        var img = document.createElement('img');
+        img.src = image_path;
+        img.alt = 'xfeed_button';
+        img.style.width = '50px';
+        img.style.position = 'fixed';
+        img.style.right = 0;
+        img.style.bottom = 0;
+        return img;
+    },
+
+    beginFeedback: function() {
+        var self = this;
+        document.getElementById('xfeed_button').addEventListener('click', function() {
+            // @todo display a loader
+            setTimeout(function(){
+                self.collectFeedback = true;
+            }, 1000);
+            document.body.style.cursor = "url(http://localhost/xfeed/xfeed_target.png),auto";
+            document.addEventListener('click', function(e) { xfeed.onFeedbackClick(e); });
+            self.prepareEndFeedback();
+        });
+    },
+
+    prepareEndFeedback: function() {
+        var img = document.getElementById('xfeed_button');
+        document.body.removeChild(img);
+
+        var img = this.createImageTemplate('http://localhost/xfeed/plus.png');
+        img.setAttribute('id', 'remove_xfeed_button');
+        img.style.zIndex = 1000;
+        document.body.appendChild(img);
+        this.endFeeback();
+    },
+
+    endFeeback: function() {
+        var self = this;
+        document.getElementById('remove_xfeed_button').addEventListener('click', function() {
+            document.body.removeChild(this);
+            document.body.style.cursor = 'auto';
+            self.collectFeedback = false;
+            self.init();
+        });
+    },
+
 };
 
 window.onload = function() {
-    document.body.style.cursor = "url(http://localhost/xfeed/xfeed_target.png),auto";
-    document.addEventListener('click', function(e) { xfeed.onFeedbackClick(e); });
+    xfeed.init();
 };

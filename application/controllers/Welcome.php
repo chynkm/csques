@@ -139,6 +139,41 @@ class Welcome extends CI_Controller {
 
     public function ajax_get_plugin()
     {
+        /*if (isset($_SERVER["HTTP_ORIGIN"]) === true) {
+            $origin = $_SERVER["HTTP_ORIGIN"];
+            $allowed_origins = array(
+                "http://cscbse.test",
+            );
+            if (in_array($origin, $allowed_origins, true) === true) {
+                header('Access-Control-Allow-Origin: ' . $origin);
+                header('Access-Control-Allow-Credentials: true');
+                header('Access-Control-Allow-Methods: POST');
+                header('Access-Control-Allow-Headers: Content-Type');
+            }
+            if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
+                exit; // OPTIONS request wants only the policy, we can stop here
+            }
+        }
+
+        error_log(print_r($_REQUEST, true), 3, "errors.log");
+
+        $mysqli = new mysqli("127.0.0.1", "root", "", "cscbse") or die('Error: Unable to connect to MySQL: '.mysqli_connect_error());
+        $query = "INSERT INTO
+        feedbacks(browser, browser_version, os, os_version, mobile, element_path, element_html, url, device_width, device_height, document_width,
+            document_height, vertex_x, vertex_y, user_agent) VALUES
+            ({$_POST['browser']}, {$_POST['browser_version']}, {$_POST['os']}, {$_POST['os_version']}, {$_POST['mobile']},
+            {$_POST['element_path']}, {$_POST['element_html']}, {$_POST['url']}, {$_POST['device_width']}, {$_POST['device_height']},
+            {$_POST['document_width']}, {$_POST['document_height']}, {$_POST['vertex_x']}, {$_POST['vertex_y']}, {$_POST['user_agent']})";
+
+
+        $mysqli->query($query);
+
+        // printf ("New Record has id %d.\n", $mysqli->insert_id);
+
+        $mysqli->close();
+
+        echo 'ok';
+        die;*/
         $data = [];
         return $this->load->view('welcome/plugin', $data);
     }
