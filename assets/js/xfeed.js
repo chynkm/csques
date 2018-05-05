@@ -18,6 +18,105 @@ var xfeed = {
     collectFeedback: false,
     elementHtml: null,
     saveFeedbackURL: 'http://xfeed.test/save_feedback.php',
+    getFeedbackURL: 'http://xfeed.test/get_feedback.php',
+
+    init: function() {
+        this.initFeedback();
+        this.setPageURL();
+        this.setBrowserAndOS();
+    },
+
+    initFeedback: function() {
+        this.createImage();
+        this.beginFeedback();
+    },
+
+    createImage: function() {
+        var img = this.createImageTemplate('http://localhost/xfeed/minus.png');
+        img.setAttribute('id', 'xfeed_button');
+        document.body.appendChild(img);
+    },
+
+    createImageTemplate: function(image_path) {
+        var img = document.createElement('img');
+        img.src = image_path;
+        img.alt = 'xfeed_button';
+        // img.style.width = '50px';
+        img.style.position = 'fixed';
+        img.style.right = 0;
+        img.style.bottom = 0;
+        img.style.border = '1px solid black';//need to debug click
+        return img;
+    },
+
+    beginFeedback: function() {
+        var self = this;
+        document.getElementById('xfeed_button').addEventListener('click', function() {
+            // @todo display a loader
+            // make sure all the succeeding functions executes
+            // when the loader is being displayed
+            // setTimeout(function(){
+                // self.collectFeedback = true;
+            // }, 1000);
+            self.displaySpinner();
+            self.collectFeedback = true;
+            document.body.style.cursor = 'url(http://localhost/xfeed/xfeed_target.png),auto';
+            document.addEventListener('click', function(e) { xfeed.onFeedbackClick(e); });
+            self.updateAnchorCursors();
+            self.prepareEndFeedback();
+            self.getAllFeedbackForPage();
+            setTimeout(function(){
+                self.removeSpinner();
+            }, 2000);
+        });
+    },
+
+    updateAnchorCursors: function() {
+        var a = document.getElementsByTagName('a');
+        for(let i = 0; i < a.length; i++) {
+            a[i].style.cursor = 'url(http://localhost/xfeed/xfeed_target.png),auto';
+        }
+    },
+
+    removeAnchorCursors: function() {
+        var a = document.getElementsByTagName('a');
+        for(let i = 0; i < a.length; i++) {
+            a[i].style.cursor = 'pointer';
+        }
+    },
+
+    prepareEndFeedback: function() {
+        var img = document.getElementById('xfeed_button');
+        document.body.removeChild(img);
+
+        var img = this.createImageTemplate('http://localhost/xfeed/plus.png');
+        img.setAttribute('id', 'remove_xfeed_button');
+        img.style.zIndex = 1000;
+        img.style.cursor = 'auto';
+        document.body.appendChild(img);
+        this.endFeeback();
+    },
+
+    endFeeback: function() {
+        var self = this;
+        document.getElementById('remove_xfeed_button').addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            document.body.removeChild(this);
+            document.body.style.cursor = 'auto';
+            self.removeAnchorCursors();
+            self.removeFeedbackPins();
+            self.collectFeedback = false;
+            self.initFeedback();
+        });
+    },
+
+    setPageURL: function() {
+        var url = window.location.href, hash = window.location.hash;
+        var indexOfHash = url.indexOf(hash) || url.length;
+        this.url = url.substr(0, indexOfHash);
+    },
 
     onFeedbackClick: function(e) {
         var element = e.target || e.srcElement;
@@ -25,18 +124,16 @@ var xfeed = {
             e.stopPropagation();
             e.preventDefault();
 
-            this.elementHtml = element.innerHTML;
+            // this.elementHtml = element.innerHTML; providing incorrect values. @todo need to fix
             this.elementPath = this.getElementPath(element);
-            this.url = window.location.href;
             this.documentWidth = document.documentElement.clientWidth;
             this.documentHeight = document.documentElement.clientHeight;
             this.deviceWidth = window.screen.availWidth;
             this.deviceHeight = window.screen.availHeight;
-            this.vertex.x = e.pageX;
-            this.vertex.y = e.pageY;
+            this.vertex.x = e.pageX + 5; // change according to target icon size
+            this.vertex.y = e.pageY - 5; // change according to target icon size
             this.userAgent = window.navigator.userAgent;
 
-            this.setBrowserAndOS();
             this.echoValues();
             this.sendFeedback();
         }
@@ -179,6 +276,76 @@ var xfeed = {
         ajax.send(this.collectPostElements());
     },
 
+    // promiseMethod to null if you want to exclude it
+    executeAjax: function(method, URL, promiseMethod, params) {
+        var ajax = new XMLHttpRequest(), self = this;
+        ajax.open(method, URL, true);
+        if(method == 'POST') {
+            ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        }
+        ajax.onreadystatechange = function () {
+            if (this.readyState != 4 || this.status != 200) {
+                return;
+            }
+            console.log(this.responseText);
+            if(typeof promiseMethod === 'undefined' || (typeof promiseMethod !== 'undefined' && promiseMethod == null)) {
+                return this.responseText;
+            } else {
+                promiseMethod(self, this.responseText);
+            }
+        };
+
+        if (typeof params === 'undefined') {
+            ajax.send();
+        } else {
+            ajax.send(params);
+        }
+    },
+
+    getAllFeedbackForPage: function() {
+        this.executeAjax('GET', this.getFeedbackURL+"?url='"+this.url+"'", this.displayFeedbackPins);
+    },
+
+    displayFeedbackPins: function(self, response) {
+        var feedbacks = JSON.parse(response);
+        var divOfPins = document.createElement('div');
+        divOfPins.setAttribute('id', 'xfeed_pin_div');
+        feedbacks.forEach(function(feedback) {
+            var pin = self.createImageTemplate('http://xfeed.test/pin.png');
+            pin.setAttribute('class', 'xfeed_pin');
+            pin.style.position = 'absolute';
+            pin.style.left = feedback.vertex_x+'px';
+            pin.style.top = feedback.vertex_y+'px';
+            divOfPins.appendChild(pin);
+        });
+        document.body.appendChild(divOfPins);
+    },
+
+    removeFeedbackPins: function() {
+        var divOfPins = document.getElementById('xfeed_pin_div');
+        divOfPins.parentElement.removeChild(divOfPins);
+    },
+
+    displaySpinner: function() {
+        var divOverlay = document.createElement('div');
+        divOverlay.setAttribute('id', 'xfeed_div_overlay');
+        divOverlay.style.position = 'fixed';
+        divOverlay.style.width = '100%';
+        divOverlay.style.height = '100%';
+        divOverlay.style.background = 'rgba(0,0,0,0.5) url(http://xfeed.test/spinner.gif) center center no-repeat';
+        divOverlay.style.zIndex = 2;
+        divOverlay.style.top = 0;
+        divOverlay.style.left = 0;
+        divOverlay.style.right = 0;
+        divOverlay.style.bottom = 0;
+        document.body.appendChild(divOverlay);
+    },
+
+    removeSpinner: function() {
+        var divOverlay = document.getElementById('xfeed_div_overlay');
+        divOverlay.parentElement.removeChild(divOverlay);
+    },
+
     displayForm: function() {
         var ajax = new XMLHttpRequest();
         ajax.onreadystatechange = function() {
@@ -190,62 +357,6 @@ var xfeed = {
         };
         xhttp.open("GET", "ajax_info.txt", true);
         xhttp.send();
-    },
-
-    init: function() {
-        this.createImage();
-        this.beginFeedback();
-    },
-
-    createImage: function() {
-        var img = this.createImageTemplate('http://localhost/xfeed/minus.png');
-        img.setAttribute('id', 'xfeed_button');
-        document.body.appendChild(img);
-    },
-
-    createImageTemplate: function(image_path) {
-        var img = document.createElement('img');
-        img.src = image_path;
-        img.alt = 'xfeed_button';
-        img.style.width = '50px';
-        img.style.position = 'fixed';
-        img.style.right = 0;
-        img.style.bottom = 0;
-        return img;
-    },
-
-    beginFeedback: function() {
-        var self = this;
-        document.getElementById('xfeed_button').addEventListener('click', function() {
-            // @todo display a loader
-            setTimeout(function(){
-                self.collectFeedback = true;
-            }, 1000);
-            document.body.style.cursor = "url(http://localhost/xfeed/xfeed_target.png),auto";
-            document.addEventListener('click', function(e) { xfeed.onFeedbackClick(e); });
-            self.prepareEndFeedback();
-        });
-    },
-
-    prepareEndFeedback: function() {
-        var img = document.getElementById('xfeed_button');
-        document.body.removeChild(img);
-
-        var img = this.createImageTemplate('http://localhost/xfeed/plus.png');
-        img.setAttribute('id', 'remove_xfeed_button');
-        img.style.zIndex = 1000;
-        document.body.appendChild(img);
-        this.endFeeback();
-    },
-
-    endFeeback: function() {
-        var self = this;
-        document.getElementById('remove_xfeed_button').addEventListener('click', function() {
-            document.body.removeChild(this);
-            document.body.style.cursor = 'auto';
-            self.collectFeedback = false;
-            self.init();
-        });
     },
 
 };
