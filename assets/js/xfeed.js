@@ -19,6 +19,7 @@ var xfeed = {
     elementHtml: null,
     saveFeedbackURL: 'http://xfeed.test/save_feedback.php',
     getFeedbackURL: 'http://xfeed.test/get_feedback.php',
+    feedbacks: [],
 
     init: function() {
         this.initFeedback();
@@ -29,6 +30,8 @@ var xfeed = {
     initFeedback: function() {
         this.createImage();
         this.beginFeedback();
+        this.documentWidth = document.documentElement.clientWidth;
+        this.documentHeight = document.documentElement.clientHeight;
     },
 
     createImage: function() {
@@ -45,7 +48,7 @@ var xfeed = {
         img.style.position = 'fixed';
         img.style.right = 0;
         img.style.bottom = 0;
-        img.style.border = '1px solid black';//need to debug click
+        // img.style.border = '1px solid black';//need to debug click
         return img;
     },
 
@@ -61,10 +64,12 @@ var xfeed = {
             self.displaySpinner();
             self.collectFeedback = true;
             document.body.style.cursor = 'url(http://localhost/xfeed/xfeed_target.png),auto';
-            document.addEventListener('click', function(e) { xfeed.onFeedbackClick(e); });
+            document.addEventListener('dblclick', function(e) { xfeed.onFeedbackClick(e); });
+            // get all feedback for the page.
+            self.executeAjax('GET', self.getFeedbackURL+"?url='"+self.url+"'", self.displayFeedbackPins);
             self.updateAnchorCursors();
             self.prepareEndFeedback();
-            self.getAllFeedbackForPage();
+            self.windowResize();
             setTimeout(function(){
                 self.removeSpinner();
             }, 2000);
@@ -135,7 +140,7 @@ var xfeed = {
             this.userAgent = window.navigator.userAgent;
 
             this.echoValues();
-            this.sendFeedback();
+            this.executeAjax('POST', this.saveFeedbackURL, this.addPin, this.collectPostElements());
         }
     },
 
@@ -254,26 +259,21 @@ var xfeed = {
             "'&element_path='"+this.elementPath+
             "'&element_html='"+this.elementHtml+
             "'&url='"+this.url+
-            "'&device_width='"+this.deviceWidth+
-            "'&device_height='"+this.deviceHeight+
-            "'&document_width='"+this.documentWidth+
-            "'&document_height='"+this.documentHeight+
-            "'&vertex_x='"+this.vertex.x+
-            "'&vertex_y='"+this.vertex.y+
-            "'&user_agent='"+this.userAgent+"'";
+            "'&device_width="+this.deviceWidth+
+            "&device_height="+this.deviceHeight+
+            "&document_width="+this.documentWidth+
+            "&document_height="+this.documentHeight+
+            "&vertex_x="+this.vertex.x+
+            "&vertex_y="+this.vertex.y+
+            "&user_agent='"+this.userAgent+"'";
     },
 
-    sendFeedback: function() {
-        var ajax = new XMLHttpRequest();
-        ajax.open('POST', this.saveFeedbackURL, true);
-        ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajax.onreadystatechange = function () {
-            if (this.readyState != 4 || this.status != 200) {
-                return;
-            }
-            console.log(this.responseText);
-        };
-        ajax.send(this.collectPostElements());
+    addPin: function(self, response) {
+        var feedback = JSON.parse(response);
+        var pin = self.createPin(feedback);
+        document.getElementById('xfeed_pin_div').appendChild(pin);
+        self.feedbacks.push(feedback);
+        console.log(self.feedbacks);
     },
 
     // promiseMethod to null if you want to exclude it
@@ -288,9 +288,7 @@ var xfeed = {
                 return;
             }
             console.log(this.responseText);
-            if(typeof promiseMethod === 'undefined' || (typeof promiseMethod !== 'undefined' && promiseMethod == null)) {
-                return this.responseText;
-            } else {
+            if(typeof promiseMethod !== 'undefined' && promiseMethod != null) {
                 promiseMethod(self, this.responseText);
             }
         };
@@ -302,28 +300,46 @@ var xfeed = {
         }
     },
 
-    getAllFeedbackForPage: function() {
-        this.executeAjax('GET', this.getFeedbackURL+"?url='"+this.url+"'", this.displayFeedbackPins);
-    },
-
     displayFeedbackPins: function(self, response) {
-        var feedbacks = JSON.parse(response);
+        self.feedbacks = JSON.parse(response);
         var divOfPins = document.createElement('div');
         divOfPins.setAttribute('id', 'xfeed_pin_div');
-        feedbacks.forEach(function(feedback) {
-            var pin = self.createImageTemplate('http://xfeed.test/pin.png');
-            pin.setAttribute('class', 'xfeed_pin');
-            pin.style.position = 'absolute';
-            pin.style.left = feedback.vertex_x+'px';
-            pin.style.top = feedback.vertex_y+'px';
+        self.feedbacks.forEach(function(feedback) {
+            var pin = self.createPin(feedback);
             divOfPins.appendChild(pin);
         });
         document.body.appendChild(divOfPins);
     },
 
+    createPin: function(feedback) {
+        var pin = this.createImageTemplate('http://xfeed.test/pin.png');
+        pin.setAttribute('class', 'xfeed_pin');
+        pin.style.position = 'absolute';
+        pin.style.left = feedback.vertex_x * this.documentWidth+'px';
+        pin.style.top = feedback.vertex_y * this.documentHeight+'px';
+        return pin;
+    },
+
     removeFeedbackPins: function() {
         var divOfPins = document.getElementById('xfeed_pin_div');
         divOfPins.parentElement.removeChild(divOfPins);
+    },
+
+    windowResize: function() {
+        var self = this;
+        window.addEventListener('resize', function(e) {
+            var pins = document.getElementsByClassName('xfeed_pin');
+            var newWinWidth = document.documentElement.clientWidth;
+            var newWinHeight = document.documentElement.clientHeight;
+
+            for(var i = 0; i < pins.length; i ++) {
+                pins[i].style.left = Math.round(parseInt(pins[i].style.left) * newWinWidth / self.documentWidth)+'px';
+                pins[i].style.top = Math.round(parseInt(pins[i].style.top) * newWinHeight / self.documentHeight)+'px';
+            }
+
+            self.documentWidth = document.documentElement.clientWidth;
+            self.documentHeight =  document.documentElement.clientHeight;
+        });
     },
 
     displaySpinner: function() {

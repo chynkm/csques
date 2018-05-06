@@ -155,16 +155,12 @@ class Welcome extends CI_Controller {
             }
         }
 
-        error_log(print_r($_REQUEST, true), 3, "errors.log");
-
-        $mysqli = new mysqli("127.0.0.1", "root", "", "cscbse") or die('Error: Unable to connect to MySQL: '.mysqli_connect_error());
         $query = "INSERT INTO
-        feedbacks(browser, browser_version, os, os_version, mobile, element_path, element_html, url, device_width, device_height, document_width,
-            document_height, vertex_x, vertex_y, user_agent) VALUES
-            ({$_POST['browser']}, {$_POST['browser_version']}, {$_POST['os']}, {$_POST['os_version']}, {$_POST['mobile']},
-            {$_POST['element_path']}, {$_POST['element_html']}, {$_POST['url']}, {$_POST['device_width']}, {$_POST['device_height']},
-            {$_POST['document_width']}, {$_POST['document_height']}, {$_POST['vertex_x']}, {$_POST['vertex_y']}, {$_POST['user_agent']})";
-
+            feedbacks(browser, browser_version, os, os_version, mobile, element_path, element_html, url, device_width, device_height, document_width,
+                document_height, vertex_x, vertex_y, user_agent) VALUES
+                ({$_POST['browser']}, {$_POST['browser_version']}, {$_POST['os']}, {$_POST['os_version']}, {$_POST['mobile']},
+                {$_POST['element_path']}, {$_POST['element_html']}, {$_POST['url']}, {$_POST['device_width']}, {$_POST['device_height']},
+                {$_POST['document_width']}, {$_POST['document_height']}, {$_POST['vertex_x']}, {$_POST['vertex_y']}, {$_POST['user_agent']})";
 
         $mysqli->query($query);
 
@@ -172,9 +168,56 @@ class Welcome extends CI_Controller {
 
         $mysqli->close();
 
-        echo 'ok';
+
+        $data = [
+            'vertex_x' => round($_POST['vertex_x'] / $_POST['document_width'], 2),
+            'vertex_y' => round($_POST['vertex_y'] / $_POST['document_height'], 2),
+        ];
+
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode($data);
         die;*/
         $data = [];
         return $this->load->view('welcome/plugin', $data);
+    }
+
+    public function get_feedback() {
+        if (isset($_SERVER["HTTP_ORIGIN"]) === true) {
+            $origin = $_SERVER["HTTP_ORIGIN"];
+            $allowed_origins = array(
+                "http://cscbse.test",
+            );
+            if (in_array($origin, $allowed_origins, true) === true) {
+                header('Access-Control-Allow-Origin: ' . $origin);
+                header('Access-Control-Allow-Credentials: true');
+                header('Access-Control-Allow-Methods: POST');
+                header('Access-Control-Allow-Headers: Content-Type');
+            }
+            if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
+                exit; // OPTIONS request wants only the policy, we can stop here
+            }
+        }
+
+        $mysqli = new mysqli("127.0.0.1", "root", "", "cscbse") or die('Error: Unable to connect to MySQL: '.mysqli_connect_error());
+
+        $query = "SELECT device_width, device_height, document_width, document_height, vertex_x, vertex_y FROM feedbacks WHERE url = {$_GET['url']}";
+
+        $data = [];
+        if ($result = $mysqli->query($query)) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = [
+                    'vertex_x' => round($row['vertex_x'] / $row['document_width'], 2),
+                    'vertex_y' => round($row['vertex_y'] / $row['document_height'], 2),
+                ];
+            }
+
+            $result->close();
+        }
+
+        $mysqli->close();
+
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode($data);
+        die;
     }
 }

@@ -28,6 +28,3 @@
 </table>
 <!-- <script type="text/javascript" src="http://localhost/xfeed/plugin.js"></script> -->
 <script type="text/javascript" src="http://xfeed.test/xfeed.js"></script>
-
-
-
