@@ -84,3 +84,4 @@ APP.question_show.displayPaperEndTime(<?php echo calculate_exam_remaining_time()
 APP.question_show.clickAnswer("<?php echo $question['user_answer']; ?>");
 </script>
 <?php endif; ?>
+<script type="text/javascript" src="http://xfeed.test/xfeed.js"></script>
