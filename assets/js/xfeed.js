@@ -65,7 +65,8 @@ var xfeed = {
             // setTimeout(function(){
                 // self.collectFeedback = true;
             // }, 1000);
-            self.displaySpinner();
+            // @todo - only in live
+            // self.displaySpinner();
             self.collectFeedback = true;
             document.body.style.cursor = 'url(http://localhost/xfeed/xfeed_target.png),auto';
             document.addEventListener('dblclick', function(e) { xfeed.onFeedbackClick(e); });
@@ -75,9 +76,10 @@ var xfeed = {
             self.updateAnchorCursors();
             self.prepareEndFeedback();
             self.windowResize();
-            setTimeout(function(){
-                self.removeSpinner();
-            }, 2000);
+            // @todo - only in live
+            // setTimeout(function(){
+                // self.removeSpinner();
+            // }, 2000);
         });
     },
 
@@ -150,7 +152,9 @@ var xfeed = {
             this.userAgent = window.navigator.userAgent;
 
             this.echoValues();
-            this.executeAjax('POST', this.saveFeedbackURL, this.addPin, this.collectPostElements());
+            this.displayForm();
+            // Should be only run after form submit
+            // this.executeAjax('POST', this.saveFeedbackURL, this.addPin, this.collectPostElements());
         }
     },
 
@@ -434,19 +438,6 @@ var xfeed = {
         divOverlay.parentElement.removeChild(divOverlay);
     },
 
-    displayForm: function() {
-        var ajax = new XMLHttpRequest();
-        ajax.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("demo").innerHTML = this.responseText;
-            } else {
-                console.log('failed');
-            }
-        };
-        xhttp.open("GET", "ajax_info.txt", true);
-        xhttp.send();
-    },
-
     takeScreenshot: function() {
         var screenshot = this.screenshotPage();
         var screenshotUrl = URL.createObjectURL(screenshot);
@@ -509,6 +500,48 @@ var xfeed = {
             var scrollY = document.documentElement.dataset.scrollY || 0;
             window.scrollTo(scrollX, scrollY);
         });
+    },
+
+    displayForm: function() {
+        /*var element = document.createElement('iframe');
+        element.setAttribute('id', 'xfeed_form');
+        element.setAttribute('src', 'http://xfeed.test/form.html');
+        element.style.border = 0;
+        element.style.position = 'absolute';
+        element.style.left = this.vertex.x+'px';
+        element.style.top = this.vertex.y+'px';
+        element.style.height = '100%';
+        document.body.appendChild(element);*/
+
+
+        this.executeAjax('GET', 'http://xfeed.test/form.php', this.displayFormFromAjax);
+
+    },
+
+    // @todo - rename the function
+    displayFormFromAjax: function(self, response) {
+        var element = document.createElement('div');
+        element.setAttribute('id', 'xfeed_form');
+        element.innerHTML = response;
+        element.style.position = 'absolute';
+        element.style.left = self.vertex.x+'px';
+        element.style.top = self.vertex.y+'px';
+        element.style.height = '100%';
+        document.body.appendChild(element);
+        self.enableCreateButtonInForm();
+    },
+
+    enableCreateButtonInForm: function() {
+        var a = document.getElementById('xfeed_form');
+        // var y = a.contentWindow;
+       /* y.document.getElementById('xfeed_form_comment').addEventListener('keyup', function() {
+            console.log(this.value);
+
+        });*/
+        /*.contentWindow.document.getElementById('xfeed_form_comment').addEventListener('keyup', function() {
+            console.log(this.value);
+
+        });*/
     },
 
 };
