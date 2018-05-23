@@ -21,6 +21,7 @@ var xfeed = {
     userAgent: null,
     collectFeedback: false,
     elementHtml: null,
+    comment: null,
     saveFeedbackURL: 'http://xfeed.test/save_feedback.php',
     getFeedbackURL: 'http://xfeed.test/get_feedback.php',
     feedbacks: [],
@@ -47,12 +48,12 @@ var xfeed = {
     createImageTemplate: function(image_path) {
         var img = document.createElement('img');
         img.src = image_path;
-        img.alt = 'xfeed_button';
+        // img.alt = 'xfeed_button';
         // img.style.width = '50px';
         img.style.position = 'fixed';
         img.style.right = 0;
         img.style.bottom = 0;
-        // img.style.border = '1px solid black';//need to debug click
+        img.style.border = '1px solid black';//need to debug click
         return img;
     },
 
@@ -323,6 +324,7 @@ var xfeed = {
             "'&element_path='"+this.elementPath+
             "'&element_html='"+this.elementHtml+
             "'&url='"+this.url+
+            "'&comment='"+this.comment+
             "'&device_width="+this.deviceWidth+
             "&device_height="+this.deviceHeight+
             "&document_width="+this.documentWidth+
@@ -503,45 +505,47 @@ var xfeed = {
     },
 
     displayForm: function() {
-        /*var element = document.createElement('iframe');
-        element.setAttribute('id', 'xfeed_form');
-        element.setAttribute('src', 'http://xfeed.test/form.html');
-        element.style.border = 0;
-        element.style.position = 'absolute';
-        element.style.left = this.vertex.x+'px';
-        element.style.top = this.vertex.y+'px';
-        element.style.height = '100%';
-        document.body.appendChild(element);*/
-
-
         this.executeAjax('GET', 'http://xfeed.test/form.php', this.displayFormFromAjax);
-
     },
 
     // @todo - rename the function
     displayFormFromAjax: function(self, response) {
-        var element = document.createElement('div');
-        element.setAttribute('id', 'xfeed_form');
-        element.innerHTML = response;
-        element.style.position = 'absolute';
-        element.style.left = self.vertex.x+'px';
-        element.style.top = self.vertex.y+'px';
-        element.style.height = '100%';
-        document.body.appendChild(element);
-        self.enableCreateButtonInForm();
+        var iframe = document.createElement('iframe');
+        document.body.appendChild(iframe);
+        iframe.contentWindow.document.open();
+        iframe.contentWindow.document.write(response);
+        iframe.contentWindow.document.close();
+        iframe.setAttribute('id', 'xfeed_form');
+        iframe.style.position = 'absolute';
+        iframe.style.left = self.vertex.x+'px';
+        iframe.style.top = self.vertex.y+'px';
+        iframe.style.height = '100%';
+        iframe.style.border = 0;
+        iframe.onload = function() {
+            self.enableFormListeners(iframe);
+        };
     },
 
-    enableCreateButtonInForm: function() {
-        var a = document.getElementById('xfeed_form');
-        // var y = a.contentWindow;
-       /* y.document.getElementById('xfeed_form_comment').addEventListener('keyup', function() {
-            console.log(this.value);
+    enableFormListeners: function(iframe) {
+        var self = this;
+        var comment = iframe.contentWindow.document.getElementById('xfeed_form_comment');
+        var submit = iframe.contentWindow.document.getElementById('xfeed_form_submit');
 
-        });*/
-        /*.contentWindow.document.getElementById('xfeed_form_comment').addEventListener('keyup', function() {
-            console.log(this.value);
+        comment.addEventListener('keyup', function() {
+            if(this.value.length > 0) {
+                submit.classList.remove('disabled');
+                self.comment = this.value;
+            } else {
+                submit.classList.add('disabled');
+                self.comment = null;
+            }
+        });
 
-        });*/
+        submit.addEventListener('click', function(){
+            self.executeAjax('POST', self.saveFeedbackURL, self.addPin, self.collectPostElements());
+            console.log('achu');
+            document.body.removeChild(iframe);
+        });
     },
 
 };
