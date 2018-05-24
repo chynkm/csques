@@ -14,10 +14,6 @@ input[type=text], select, textarea {
   border-radius: 4px;
   resize: vertical;
 }
-label {
-  padding: 5px 12px 5px 0;
-  display: inline-block;
-}
 input[type=submit] {
   background-color: #4CAF50;
   color: white;
@@ -62,14 +58,11 @@ h2 {
 </head>
 <body>
 <div class="container">
-  <h2>Issue information</h2>
+  <h2>Comment</h2>
   <form>
     <div class="row">
       <div class="col-100">
-        <label for="lname">Comments</label>
-      </div>
-      <div class="col-100">
-        <textarea type="text" id="xfeed_form_comment" name="xfeed_form_comment" placeholder="Comments"></textarea>
+        <textarea type="text" id="xfeed_form_comment" name="xfeed_form_comment" placeholder="Add your inputs"></textarea>
       </div>
     </div>
     <div class="row submit_row">

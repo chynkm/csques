@@ -541,10 +541,16 @@ var xfeed = {
             }
         });
 
-        submit.addEventListener('click', function(){
+        submit.addEventListener('click', function() {
             self.executeAjax('POST', self.saveFeedbackURL, self.addPin, self.collectPostElements());
-            console.log('achu');
             document.body.removeChild(iframe);
+        });
+
+        submit.addEventListener('keydown', function(e) {
+            if(comment.value.length <= 0) {
+                e.preventDefault();
+                return false;
+            }
         });
     },
 
