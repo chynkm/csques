@@ -25,6 +25,7 @@ var xfeed = {
     saveFeedbackURL: 'http://xfeed.test/save_feedback.php',
     getFeedbackURL: 'http://xfeed.test/get_feedback.php',
     feedbacks: [],
+    id: 0,
 
     init: function() {
         this.initFeedback();
@@ -53,7 +54,9 @@ var xfeed = {
         img.style.position = 'fixed';
         img.style.right = 0;
         img.style.bottom = 0;
-        img.style.border = '1px solid black';//need to debug click
+        img.style.zIndex = 1000;
+        img.style.cursor = 'pointer';
+        // img.style.border = '1px solid black';//need to debug click
         return img;
     },
 
@@ -120,6 +123,7 @@ var xfeed = {
             document.body.style.cursor = 'auto';
             self.removeAnchorCursors();
             self.removeFeedbackPins();
+            self.checkAndRemoveFeedbackForm();
             self.collectFeedback = false;
             self.initFeedback();
         });
@@ -151,6 +155,7 @@ var xfeed = {
             this.vertex.x = e.pageX + 5; // change according to target icon size
             this.vertex.y = e.pageY - 5; // change according to target icon size
             this.userAgent = window.navigator.userAgent;
+            this.comment = null;
 
             this.echoValues();
             this.displayForm();
@@ -316,55 +321,65 @@ var xfeed = {
     },
 
     collectPostElements: function() {
-        return "browser='"+this.browser+
-            "'&browser_version='"+this.version+
-            "'&os='"+this.os+
-            "'&os_version='"+this.osversion+
-            "'&mobile='"+this.mobile+
-            "'&element_path='"+this.elementPath+
-            "'&element_html='"+this.elementHtml+
-            "'&url='"+this.url+
-            "'&comment='"+this.comment+
-            "'&device_width="+this.deviceWidth+
-            "&device_height="+this.deviceHeight+
-            "&document_width="+this.documentWidth+
-            "&document_height="+this.documentHeight+
-            "&parent_x="+this.parent.x+
-            "&parent_y="+this.parent.y+
-            "&vertex_x="+this.vertex.x+
-            "&vertex_y="+this.vertex.y+
-            "&user_agent='"+this.userAgent+"'";
+        return "id="+this.id+
+            "&browser='"+(this.browser == null ? '' : this.browser)+
+            "'&browser_version='"+(this.version == null ? '' : this.version)+
+            "'&os='"+(this.os == null ? '' : this.os)+
+            "'&os_version='"+(this.osversion == null ? '' : this.osversion)+
+            "'&mobile='"+(this.mobile == null ? '' : this.mobile)+
+            "'&element_path='"+(this.elementPath == null ? '' : this.elementPath)+
+            "'&element_html='"+(this.elementHtml == null ? '' : this.elementHtml)+
+            "'&url='"+(this.url == null ? '' : this.url)+
+            "'&comment='"+(this.comment == null ? '' : this.comment)+
+            "'&device_width="+(this.deviceWidth == null ? '' : this.deviceWidth)+
+            "&device_height="+(this.deviceHeight == null ? '' : this.deviceHeight)+
+            "&document_width="+(this.documentWidth == null ? '' : this.documentWidth)+
+            "&document_height="+(this.documentHeight == null ? '' : this.documentHeight)+
+            "&parent_x="+(this.parent.x == null ? '' : this.parent.x)+
+            "&parent_y="+(this.parent.y == null ? '' : this.parent.y)+
+            "&vertex_x="+(this.vertex.x == null ? '' : this.vertex.x)+
+            "&vertex_y="+(this.vertex.y == null ? '' : this.vertex.y)+
+            "&user_agent='"+(this.userAgent == null ? '' : this.userAgent)+"'";
     },
 
     addPin: function(self, response) {
         var feedback = JSON.parse(response);
-        var pin = self.createPin(feedback);
-        document.getElementById('xfeed_pin_div').appendChild(pin);
-        self.feedbacks.push(feedback);
-        console.log(self.feedbacks); // @todo need to verify receipt of location
+        if(typeof self.feedbacks[feedback.id] === undefined) {
+            var pin = self.createPin(feedback);
+            document.getElementById('xfeed_pin_div').appendChild(pin);
+        }
+        self.feedbacks[feedback.id] = {
+            comment: feedback.comment,
+            vertex_x: feedback.vertex_x,
+            vertex_y: feedback.vertex_y,
+        };
     },
 
     // promiseMethod to null if you want to exclude it
     executeAjax: function(method, URL, promiseMethod, params) {
-        var ajax = new XMLHttpRequest(), self = this;
-        ajax.open(method, URL, true);
-        if(method == 'POST') {
-            ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        }
-        ajax.onreadystatechange = function () {
-            if (this.readyState != 4 || this.status != 200) {
-                return;
+        var ajax = new XMLHttpRequest(), self = this, ajaxProcessing = false;
+        if(ajaxProcessing == false) {
+            ajaxProcessing = true;
+            ajax.open(method, URL, true);
+            if(method == 'POST') {
+                ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             }
-            console.log(this.responseText);
-            if(typeof promiseMethod !== 'undefined' && promiseMethod != null) {
-                promiseMethod(self, this.responseText);
-            }
-        };
+            ajax.onreadystatechange = function () {
+                if (this.readyState != 4 || this.status != 200) {
+                    return;
+                }
+                ajaxProcessing = false;
+                // console.log(this.responseText);
+                if(typeof promiseMethod !== 'undefined' && promiseMethod != null) {
+                    promiseMethod(self, this.responseText);
+                }
+            };
 
-        if (typeof params === 'undefined') {
-            ajax.send();
-        } else {
-            ajax.send(params);
+            if (typeof params === 'undefined') {
+                ajax.send();
+            } else {
+                ajax.send(params);
+            }
         }
     },
 
@@ -372,12 +387,14 @@ var xfeed = {
         self.feedbacks = JSON.parse(response);
         var divOfPins = document.createElement('div');
         divOfPins.setAttribute('id', 'xfeed_pin_div');
-        self.feedbacks.forEach(function(feedback) {
-            var pin = self.createPin(feedback);
-            self.addResponsiveness(feedback);
+        for(var id in self.feedbacks){
+            var pin = self.createPin(self.feedbacks[id]);
+            pin.setAttribute('data-id', id);
+            self.addResponsiveness(self.feedbacks[id]);
             divOfPins.appendChild(pin);
-        });
+        }
         document.body.appendChild(divOfPins);
+        self.editPin();
     },
 
     createPin: function(feedback) {
@@ -505,11 +522,12 @@ var xfeed = {
     },
 
     displayForm: function() {
-        this.executeAjax('GET', 'http://xfeed.test/form.php', this.displayFormFromAjax);
+        this.executeAjax('GET', 'http://xfeed.test/form.php', this.displayFormUsingAjax);
     },
 
     // @todo - rename the function
-    displayFormFromAjax: function(self, response) {
+    displayFormUsingAjax: function(self, response) {
+        self.checkAndRemoveFeedbackForm();
         var iframe = document.createElement('iframe');
         document.body.appendChild(iframe);
         iframe.contentWindow.document.open();
@@ -521,6 +539,7 @@ var xfeed = {
         iframe.style.top = self.vertex.y+'px';
         iframe.style.height = '100%';
         iframe.style.border = 0;
+        iframe.style.zIndex = 2000;
         iframe.onload = function() {
             self.enableFormListeners(iframe);
         };
@@ -529,29 +548,61 @@ var xfeed = {
     enableFormListeners: function(iframe) {
         var self = this;
         var comment = iframe.contentWindow.document.getElementById('xfeed_form_comment');
-        var submit = iframe.contentWindow.document.getElementById('xfeed_form_submit');
+        var submitButton = iframe.contentWindow.document.getElementById('xfeed_form_submit');
+        var closeButton = iframe.contentWindow.document.getElementById('xfeed_form_close');
 
+        if(self.comment) {
+            comment.value = self.comment;
+            submitButton.classList.remove('disabled');
+        }
+
+        // @todo listen to change event also
         comment.addEventListener('keyup', function() {
             if(this.value.length > 0) {
-                submit.classList.remove('disabled');
+                submitButton.classList.remove('disabled');
                 self.comment = this.value;
             } else {
-                submit.classList.add('disabled');
+                submitButton.classList.add('disabled');
                 self.comment = null;
             }
         });
 
-        submit.addEventListener('click', function() {
+        submitButton.addEventListener('click', function() {
             self.executeAjax('POST', self.saveFeedbackURL, self.addPin, self.collectPostElements());
             document.body.removeChild(iframe);
         });
 
-        submit.addEventListener('keydown', function(e) {
+        submitButton.addEventListener('keydown', function(e) {
             if(comment.value.length <= 0) {
                 e.preventDefault();
                 return false;
             }
         });
+
+        closeButton.addEventListener('click', function() {
+            document.body.removeChild(iframe);
+        });
+    },
+
+    checkAndRemoveFeedbackForm: function() {
+        var iframe = document.getElementById('xfeed_form');
+        if(iframe) {
+            document.body.removeChild(iframe);
+        }
+    },
+
+    editPin: function() {
+        var self = this, pins = document.getElementsByClassName('xfeed_pin');
+        for (var i = 0; i < pins.length; i++) {
+            pins[i].addEventListener('click', function(e) {
+                var i = this.getAttribute('data-id');
+                self.id = i;
+                self.comment = self.feedbacks[i].comment;
+                self.vertex.x = self.feedbacks[i].vertex_x;
+                self.vertex.y = self.feedbacks[i].vertex_y;
+                self.displayForm();
+            });
+        }
     },
 
 };

@@ -220,4 +220,42 @@ class Welcome extends CI_Controller {
         echo json_encode($data);
         die;
     }
+
+    public function save_feedback() {
+        include_once 'db_cors.php';
+
+        // error_log(print_r($_REQUEST, true), 3, "errors.log");
+
+        if($_POST['id']) {
+            $query = "UPDATE feedbacks SET comment = {$_POST['comment']} WHERE id = ".$_POST['id'];
+        } else {
+            $query = "INSERT INTO
+            feedbacks(browser, browser_version, os, os_version, mobile, element_path, element_html, url, comment, device_width, device_height, document_width,
+                document_height, parent_x, parent_y, vertex_x, vertex_y, user_agent) VALUES
+                ({$_POST['browser']}, {$_POST['browser_version']}, {$_POST['os']}, {$_POST['os_version']}, {$_POST['mobile']},
+                {$_POST['element_path']}, {$_POST['element_html']}, {$_POST['url']}, {$_POST['comment']}, {$_POST['device_width']},
+                {$_POST['device_height']}, {$_POST['document_width']}, {$_POST['document_height']}, {$_POST['parent_x']}, {$_POST['parent_y']},
+                {$_POST['vertex_x']}, {$_POST['vertex_y']}, {$_POST['user_agent']})";
+        }
+
+
+        error_log($query."\n\n", 3, "errors.log");
+        $mysqli->query($query);
+
+        // printf ("New Record has id %d.\n", $mysqli->insert_id);
+
+        $data = [
+            'id' => $_POST['id'] ? $_POST['id'] : $mysqli->insert_id,
+            'vertex_x' => $_POST['vertex_x'],
+            'vertex_y' => $_POST['vertex_y'],
+            'comment' => $_POST['comment'],
+        ];
+
+        $mysqli->close();
+
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode($data);
+        die;
+
+    }
 }
